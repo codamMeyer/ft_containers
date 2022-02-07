@@ -2,12 +2,44 @@
 #define VECTOR_H
 #include <memory>
 
-template <class T, class Allocator = std::allocator<T>> class vector {
+namespace ft {
 
+template <class T, class Allocator = std::allocator<T>> class vector {
 public:
+  typedef T value_type;
+  typedef Allocator allocator_type;
+  typedef std::size_t size_type;
+
+  vector() : cur_size(0){};
+
+  explicit vector(size_type count, const T &value = T(),
+                  const Allocator &alloc = Allocator())
+      : cur_size(count){};
+
+  ~vector() {}
+
+  bool empty() const { return cur_size == 0; };
+  size_type size() const {
+    return cur_size; // std::distance(begin(), end())
+  };
+
+private:
+  size_type cur_size;
+  // MEMBER TYPES
+  // value_type
+  // allocator_type
+  // size_type
+  // difference_type
+  // reference
+  // const_reference
+  // pointer
+  // const_pointer
+  // iterator
+  // const_iterator
+  // reverse_iterator
+  // const_reverse_iterator
+
   // PUBLIC MEMBER FUNCTIONS
-  // vector() {}
-  // ~vector() {}
   // vector &operator=(const vector &other) {}
   // void assign(size_type count, const T &value);
   // allocator_type get_allocator() const;
@@ -35,10 +67,6 @@ public:
   // const_iterator rend() const noexcep;
 
   // CAPACITY
-  // bool empty() const;
-  // bool empty() const noexcept;
-  // size_type size() const;
-  // size_type size() const noexcept;
   // size_type max_size() const;
   // size_type max_size() const noexcept;
   // void reserve(size_type new_cap);
@@ -90,20 +118,7 @@ public:
   // std::swap(std::vector)
   // template <class T, class Alloc>
   // void swap(std::vector<T, Alloc> &lhs, std::vector<T, Alloc> &rhs);
-
-  // MEMBER TYPES
-  // value_type
-  // allocator_type
-  // size_type
-  // difference_type
-  // reference
-  // const_reference
-  // pointer
-  // const_pointer
-  // iterator
-  // const_iterator
-  // reverse_iterator
-  // const_reverse_iterator
 };
 
+} // namespace ft
 #endif // VECTOR_H
