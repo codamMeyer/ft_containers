@@ -38,20 +38,28 @@ public:
     }
     return _elements[pos];
   };
+
   const_reference at(size_type pos) const {
     if (!(pos < size())) {
       throw std::out_of_range("Invalid at pos, out of range");
     }
     return _elements[pos];
   };
-  // reference operator[](size_type pos);
-  // const_reference operator[]( size_type pos ) const;
-  // reference front();
-  // const_reference front() const;
-  // reference back();
-  // const_reference back() const;
-  // T *data();
-  // const T* data() const noexcept;
+
+  reference operator[](size_type pos) { return _elements[pos]; };
+
+  const_reference operator[](size_type pos) const { return _elements[pos]; };
+
+  reference front() { return _elements[0]; };
+
+  const_reference front() const { return _elements[0]; };
+
+  reference back() { return _elements[size() - 1]; };
+
+  const_reference back() const { return _elements[size() - 1]; };
+
+  T *data() { return _elements; };
+  const T *data() const { return _elements; };
 
   // CAPACITY
   bool empty() const { return _size == 0; };
@@ -76,9 +84,9 @@ public:
   // iterator erase( iterator pos );
   // iterator erase( iterator first, iterator last );
   void push_back(const T &value) {
-    // TODO
+    // TODO with iterators
     if (size() >= capacity()) {
-      _elements = _allocator.allocate(size() + 1);
+      reallocate(getNewCapacity());
     }
     _elements[size()] = value;
     ++_size;
@@ -89,6 +97,14 @@ public:
   // void swap( vector& other );
 
 private:
+  size_type getNewCapacity() const {
+
+    if (capacity() == 0) {
+      return 1;
+    }
+    return capacity() * 2;
+  };
+
   void reallocate(size_type new_cap) {
     size_type oldCapacity = capacity();
     pointer oldElements = _elements;
