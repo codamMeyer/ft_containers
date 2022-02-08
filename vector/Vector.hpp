@@ -2,6 +2,7 @@
 #define VECTOR_H
 #include <limits>
 #include <memory>
+#include <stdexcept>
 
 namespace ft {
 
@@ -12,24 +13,40 @@ public:
   typedef std::size_t size_type;
   typedef std::ptrdiff_t difference_type;
 
-  vector() : cur_size(0){};
+  vector() : _size(0), _capacity(0), _elements(NULL){};
 
   explicit vector(size_type count, const T &value = T(),
                   const Allocator &alloc = Allocator())
-      : cur_size(count){};
+      : _size(count), _capacity(count), _elements(NULL) {
+    (void)value;
+    (void)alloc;
+    // Need to implement _elements allocation
+  };
 
-  ~vector() {}
+  ~vector() { _allocator.deallocate(_elements, _capacity); }
 
-  bool empty() const { return cur_size == 0; };
+  bool empty() const { return _size == 0; };
   size_type size() const {
-    return cur_size; // std::distance(begin(), end())
+    return _size; // std::distance(begin(), end())
   };
   size_type max_size() const {
     return std::numeric_limits<difference_type>::max();
   };
+  size_type capacity() const { return _capacity; };
+  void reserve(size_type new_cap) {
+    if (new_cap > max_size()) {
+      throw std::length_error("Invalid reserve new_cap");
+    }
+    _elements = _allocator.allocate(new_cap);
+    _capacity = new_cap;
+  };
 
 private:
-  size_type cur_size;
+  allocator_type _allocator;
+  size_type _size;
+  size_type _capacity;
+  value_type *_elements;
+
   // MEMBER TYPES
   // value_type
   // allocator_type
@@ -71,9 +88,6 @@ private:
   // const_iterator rend() const noexcep;
 
   // CAPACITY
-  // void reserve(size_type new_cap);
-  // size_type capacity() const;
-  // size_type capacity() const noexcept;
 
   // MODIFIERS
   // void clear();
