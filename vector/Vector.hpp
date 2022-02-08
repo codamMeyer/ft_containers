@@ -31,27 +31,6 @@ public:
 
   ~vector() { _allocator.deallocate(_elements, capacity()); }
 
-  // CAPACITY
-  bool empty() const { return _size == 0; };
-  size_type size() const {
-    // TODO
-    return _size; // std::distance(begin(), end())
-  };
-  size_type max_size() const {
-    return std::numeric_limits<difference_type>::max();
-  };
-  size_type capacity() const { return _capacity; };
-  void reserve(size_type new_cap) {
-    if (new_cap > max_size()) {
-      throw std::length_error("Invalid reserve new_cap");
-    }
-    if (_elements != NULL) {
-      _allocator.deallocate(_elements, capacity());
-    }
-    _elements = _allocator.allocate(new_cap);
-    _capacity = new_cap;
-  };
-
   // ELEMENT ACCESS
   reference at(size_type pos) {
     if (!(pos < size())) {
@@ -74,6 +53,23 @@ public:
   // T *data();
   // const T* data() const noexcept;
 
+  // CAPACITY
+  bool empty() const { return _size == 0; };
+  size_type size() const {
+    // TODO
+    return _size; // std::distance(begin(), end())
+  };
+  size_type max_size() const {
+    return std::numeric_limits<difference_type>::max();
+  };
+  size_type capacity() const { return _capacity; };
+  void reserve(size_type new_cap) {
+    if (new_cap > max_size()) {
+      throw std::length_error("Invalid reserve new_cap");
+    }
+    reallocate(new_cap);
+  }
+
   // MODIFIERS
   // void clear();
   // iterator insert( iterator pos, const T& value );
@@ -93,10 +89,27 @@ public:
   // void swap( vector& other );
 
 private:
+  void reallocate(size_type new_cap) {
+    size_type oldCapacity = capacity();
+    pointer oldElements = _elements;
+    _elements = _allocator.allocate(new_cap);
+    _capacity = new_cap;
+
+    if (oldElements == NULL) {
+      return;
+    }
+
+    for (size_type i = 0; i < size(); ++i) {
+      _elements[i] = oldElements[i];
+    }
+
+    _allocator.deallocate(oldElements, oldCapacity);
+  }
+
   allocator_type _allocator;
   size_type _size;
   size_type _capacity;
-  value_type *_elements;
+  pointer _elements;
 
   // MEMBER TYPES
   // iterator
