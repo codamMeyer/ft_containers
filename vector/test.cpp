@@ -4,7 +4,7 @@
 class EmptyVectorTest : public ::testing::Test {
 public:
   typedef ft::vector<int>::difference_type difference_type;
-  const ft::vector<int> vec;
+  ft::vector<int> vec;
 };
 
 TEST_F(EmptyVectorTest, empty) { EXPECT_TRUE(vec.empty()); }
@@ -13,6 +13,10 @@ TEST_F(EmptyVectorTest, maxSize) {
   EXPECT_EQ(vec.max_size(), std::numeric_limits<difference_type>::max());
 }
 TEST_F(EmptyVectorTest, capacity) { EXPECT_EQ(vec.capacity(), 0); }
+TEST_F(EmptyVectorTest, pushBack) {
+  EXPECT_NO_THROW(vec.push_back(2));
+  EXPECT_EQ(vec.size(), 1);
+}
 
 class VectorTest : public ::testing::Test {
 public:

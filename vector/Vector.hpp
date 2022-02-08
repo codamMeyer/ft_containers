@@ -8,6 +8,7 @@ namespace ft {
 
 template <class T, class Allocator = std::allocator<T>> class vector {
 public:
+  // MEMBER TYPES
   typedef T value_type;
   typedef Allocator allocator_type;
   typedef std::size_t size_type;
@@ -25,6 +26,7 @@ public:
 
   ~vector() { _allocator.deallocate(_elements, _capacity); }
 
+  // CAPACITY
   bool empty() const { return _size == 0; };
   size_type size() const {
     return _size; // std::distance(begin(), end())
@@ -41,6 +43,22 @@ public:
     _capacity = new_cap;
   };
 
+  // MODIFIERS
+  // void clear();
+  // iterator insert( iterator pos, const T& value );
+  // iterator erase( iterator pos );
+  // iterator erase( iterator first, iterator last );
+  void push_back(const T &value) {
+    if (size() >= capacity()) {
+      _elements = _allocator.allocate(size() + 1);
+    }
+    _elements[size()] = value;
+    ++_size;
+  };
+  // void pop_back();
+  // void resize( size_type count );
+  // void resize( size_type count, T value = T() );
+  // void swap( vector& other );
 private:
   allocator_type _allocator;
   size_type _size;
@@ -86,19 +104,6 @@ private:
   // const_iterator end() const noexcep;
   // const_iterator rbegin() const noexcep;
   // const_iterator rend() const noexcep;
-
-  // CAPACITY
-
-  // MODIFIERS
-  // void clear();
-  // iterator insert( iterator pos, const T& value );
-  // iterator erase( iterator pos );
-  // iterator erase( iterator first, iterator last );
-  // void push_back( const T& value );
-  // void pop_back();
-  // void resize( size_type count );
-  // void resize( size_type count, T value = T() );
-  // void swap( vector& other );
 
   // NON-MEMBER FUNCTIONS
   // operator==
