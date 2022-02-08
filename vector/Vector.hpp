@@ -1,5 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
+#include <limits>
 #include <memory>
 
 namespace ft {
@@ -9,6 +10,7 @@ public:
   typedef T value_type;
   typedef Allocator allocator_type;
   typedef std::size_t size_type;
+  typedef std::ptrdiff_t difference_type;
 
   vector() : cur_size(0){};
 
@@ -22,6 +24,9 @@ public:
   size_type size() const {
     return cur_size; // std::distance(begin(), end())
   };
+  size_type max_size() const {
+    return std::numeric_limits<difference_type>::max();
+  };
 
 private:
   size_type cur_size;
@@ -29,7 +34,6 @@ private:
   // value_type
   // allocator_type
   // size_type
-  // difference_type
   // reference
   // const_reference
   // pointer
@@ -67,8 +71,6 @@ private:
   // const_iterator rend() const noexcep;
 
   // CAPACITY
-  // size_type max_size() const;
-  // size_type max_size() const noexcept;
   // void reserve(size_type new_cap);
   // size_type capacity() const;
   // size_type capacity() const noexcept;
