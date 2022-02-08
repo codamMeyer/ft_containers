@@ -6,6 +6,7 @@
 
 namespace ft {
 
+// TODO review exception texts
 template <class T, class Allocator = std::allocator<T>> class vector {
 public:
   // MEMBER TYPES
@@ -13,22 +14,27 @@ public:
   typedef Allocator allocator_type;
   typedef std::size_t size_type;
   typedef std::ptrdiff_t difference_type;
+  typedef value_type &reference;
+  typedef const value_type &const_reference;
+  typedef typename Allocator::pointer pointer;
+  typedef typename Allocator::const_pointer const_pointer;
 
   vector() : _size(0), _capacity(0), _elements(NULL){};
 
   explicit vector(size_type count, const T &value = T(),
                   const Allocator &alloc = Allocator())
-      : _size(count), _capacity(count), _elements(NULL) {
-    (void)value;
-    (void)alloc;
-    // Need to implement _elements allocation
+      : _allocator(alloc), _size(count), _capacity(count), _elements(NULL) {
+    // TODO
+    _elements = _allocator.allocate(count);
+    _allocator.construct(_elements, value);
   };
 
-  ~vector() { _allocator.deallocate(_elements, _capacity); }
+  ~vector() { _allocator.deallocate(_elements, capacity()); }
 
   // CAPACITY
   bool empty() const { return _size == 0; };
   size_type size() const {
+    // TODO
     return _size; // std::distance(begin(), end())
   };
   size_type max_size() const {
@@ -39,9 +45,34 @@ public:
     if (new_cap > max_size()) {
       throw std::length_error("Invalid reserve new_cap");
     }
+    if (_elements != NULL) {
+      _allocator.deallocate(_elements, capacity());
+    }
     _elements = _allocator.allocate(new_cap);
     _capacity = new_cap;
   };
+
+  // ELEMENT ACCESS
+  reference at(size_type pos) {
+    if (!(pos < size())) {
+      throw std::out_of_range("Invalid at pos, out of range");
+    }
+    return _elements[pos];
+  };
+  const_reference at(size_type pos) const {
+    if (!(pos < size())) {
+      throw std::out_of_range("Invalid at pos, out of range");
+    }
+    return _elements[pos];
+  };
+  // reference operator[](size_type pos);
+  // const_reference operator[]( size_type pos ) const;
+  // reference front();
+  // const_reference front() const;
+  // reference back();
+  // const_reference back() const;
+  // T *data();
+  // const T* data() const noexcept;
 
   // MODIFIERS
   // void clear();
@@ -49,6 +80,7 @@ public:
   // iterator erase( iterator pos );
   // iterator erase( iterator first, iterator last );
   void push_back(const T &value) {
+    // TODO
     if (size() >= capacity()) {
       _elements = _allocator.allocate(size() + 1);
     }
@@ -59,6 +91,7 @@ public:
   // void resize( size_type count );
   // void resize( size_type count, T value = T() );
   // void swap( vector& other );
+
 private:
   allocator_type _allocator;
   size_type _size;
@@ -66,13 +99,6 @@ private:
   value_type *_elements;
 
   // MEMBER TYPES
-  // value_type
-  // allocator_type
-  // size_type
-  // reference
-  // const_reference
-  // pointer
-  // const_pointer
   // iterator
   // const_iterator
   // reverse_iterator
@@ -82,18 +108,6 @@ private:
   // vector &operator=(const vector &other) {}
   // void assign(size_type count, const T &value);
   // allocator_type get_allocator() const;
-
-  // ELEMENT ACCESS
-  // reference at(size_type pos);
-  // const_reference at( size_type pos ) const;
-  // reference operator[](size_type pos);
-  // const_reference operator[]( size_type pos ) const;
-  // reference front();
-  // const_reference front() const;
-  // reference back();
-  // const_reference back() const;
-  // T *data();
-  // const T* data() const noexcept;
 
   // ITERATOR
   // iterator begin();
