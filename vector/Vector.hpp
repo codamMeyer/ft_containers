@@ -1,5 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
+#include <iterator>
 #include <limits>
 #include <memory>
 #include <stdexcept>
@@ -8,6 +9,18 @@ namespace ft {
 
 // TODO review exception texts
 template <class T, class Allocator = std::allocator<T>> class vector {
+  class vector_iterator {
+  public:
+    vector_iterator() : value(NULL) {}
+    vector_iterator(T *value) : value(value) {}
+
+    T operator*() { return *value; };
+    T operator*() const { return *value; };
+
+  private:
+    T *value;
+  };
+
 public:
   // MEMBER TYPES
   typedef T value_type;
@@ -18,8 +31,13 @@ public:
   typedef const value_type &const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
+  typedef vector_iterator iterator;
+  typedef const vector_iterator const_iterator;
+  // reverse_iterator
+  // const_reverse_iterator
 
-  vector() : _size(0), _capacity(0), _elements(NULL){};
+  vector()
+      : _size(0), _capacity(0), _elements(NULL), _begin(NULL), _end(NULL){};
 
   explicit vector(size_type count, const T &value = T(),
                   const Allocator &alloc = Allocator())
@@ -27,6 +45,8 @@ public:
     // TODO
     _elements = _allocator.allocate(count);
     _allocator.construct(_elements, value);
+    _begin = &front();
+    _end = &back();
   };
 
   ~vector() { _allocator.deallocate(_elements, capacity()); }
@@ -96,6 +116,15 @@ public:
   // void resize( size_type count, T value = T() );
   // void swap( vector& other );
 
+  // ITERATOR
+  iterator begin() { return _begin; };
+  iterator end() { return _end; };
+  const_iterator begin() const { return _begin; };
+  const_iterator end() const { return _end; };
+  // iterator rend();
+  // iterator rbegin();
+  // const_iterator rbegin() const noexcep;
+  // const_iterator rend() const noexcep;
 private:
   size_type getNewCapacity() const {
 
@@ -126,27 +155,13 @@ private:
   size_type _size;
   size_type _capacity;
   pointer _elements;
-
-  // MEMBER TYPES
-  // iterator
-  // const_iterator
-  // reverse_iterator
-  // const_reverse_iterator
+  iterator _begin;
+  iterator _end;
 
   // PUBLIC MEMBER FUNCTIONS
   // vector &operator=(const vector &other) {}
   // void assign(size_type count, const T &value);
   // allocator_type get_allocator() const;
-
-  // ITERATOR
-  // iterator begin();
-  // iterator end();
-  // iterator rbegin();
-  // iterator rend();
-  // const_iterator begin() const noexcep;
-  // const_iterator end() const noexcep;
-  // const_iterator rbegin() const noexcep;
-  // const_iterator rend() const noexcep;
 
   // NON-MEMBER FUNCTIONS
   // operator==

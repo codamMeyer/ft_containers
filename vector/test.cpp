@@ -104,3 +104,10 @@ TEST_F(VectorTest, pushBackWithCapacity) {
   EXPECT_EQ(vec.size(), 3);
   EXPECT_EQ(vec.capacity(), 3);
 }
+
+class VectorIteratorTest : public VectorTest {};
+
+TEST_F(VectorIteratorTest, begin) {
+  EXPECT_EQ(*vec.begin(), 5);
+  EXPECT_EQ(*const_vec.begin(), 5);
+}
