@@ -111,3 +111,62 @@ TEST_F(VectorIteratorTest, begin) {
   EXPECT_EQ(*vec.begin(), 5);
   EXPECT_EQ(*const_vec.begin(), 5);
 }
+
+TEST_F(VectorIteratorTest, end) {
+  vec.end();       // TODO make a real test
+  const_vec.end(); // TODO make a real test
+}
+
+TEST_F(VectorIteratorTest, dereference) {
+  *vec.begin() = 7;
+
+  EXPECT_EQ(*vec.begin(), 7);
+  EXPECT_EQ(*const_vec.begin(), 7);
+}
+
+TEST_F(VectorIteratorTest, preIncrement) {
+  vec.push_back(7);
+  ft::vector<int>::iterator it = vec.begin();
+  ++it;
+  EXPECT_EQ(*it, 7);
+}
+
+TEST_F(VectorIteratorTest, postIncrement) {
+  vec.push_back(7);
+  ft::vector<int>::iterator it = vec.begin();
+  ft::vector<int>::iterator old = it++;
+  EXPECT_EQ(*old, 5);
+  EXPECT_EQ(*it, 7);
+}
+
+TEST_F(VectorIteratorTest, preDecrement) {
+  vec.push_back(7);
+  ft::vector<int>::iterator it = vec.end();
+  --it;
+  EXPECT_EQ(*it, 7);
+}
+
+TEST_F(VectorIteratorTest, postDecrement) {
+  vec.push_back(7);
+  ft::vector<int>::iterator it = vec.end();
+  --it;
+  ft::vector<int>::iterator old = it--;
+  EXPECT_EQ(*old, 7);
+  EXPECT_EQ(*it, 5);
+}
+
+TEST_F(VectorIteratorTest, plusEqual) {
+  vec.push_back(7);
+  vec.push_back(9);
+  ft::vector<int>::iterator it = vec.begin();
+  it += 2;
+  EXPECT_EQ(*it, 9);
+}
+
+TEST_F(VectorIteratorTest, minusEqual) {
+  vec.push_back(7);
+  vec.push_back(9);
+  ft::vector<int>::iterator it = vec.end();
+  it -= 2;
+  EXPECT_EQ(*it, 7);
+}

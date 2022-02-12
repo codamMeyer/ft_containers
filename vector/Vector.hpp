@@ -14,8 +14,41 @@ template <class T, class Allocator = std::allocator<T>> class vector {
     vector_iterator() : value(NULL) {}
     vector_iterator(T *value) : value(value) {}
 
-    T operator*() { return *value; };
-    T operator*() const { return *value; };
+    T &operator*() { return *value; };
+
+    const T &operator*() const { return *value; };
+
+    vector_iterator &operator++() {
+      ++value;
+      return *this;
+    };
+
+    vector_iterator operator++(int) {
+      vector_iterator old = *this;
+      ++value;
+      return old;
+    };
+
+    vector_iterator &operator--() {
+      --value;
+      return *this;
+    };
+
+    vector_iterator operator--(int) {
+      vector_iterator old = *this;
+      --value;
+      return old;
+    };
+
+    vector_iterator &operator+=(int amount) {
+      value += amount;
+      return *this;
+    };
+
+    vector_iterator &operator-=(int amount) {
+      value -= amount;
+      return *this;
+    };
 
   private:
     T *value;
@@ -45,8 +78,8 @@ public:
     // TODO
     _elements = _allocator.allocate(count);
     _allocator.construct(_elements, value);
-    _begin = &front();
-    _end = &back();
+    _begin = _elements;
+    _end = &_elements[size()];
   };
 
   ~vector() { _allocator.deallocate(_elements, capacity()); }
@@ -110,6 +143,7 @@ public:
     }
     _elements[size()] = value;
     ++_size;
+    ++_end;
   };
   // void pop_back();
   // void resize( size_type count );
@@ -139,7 +173,8 @@ private:
     pointer oldElements = _elements;
     _elements = _allocator.allocate(new_cap);
     _capacity = new_cap;
-
+    _begin = _elements;
+    _end = _elements;
     if (oldElements == NULL) {
       return;
     }
@@ -147,7 +182,7 @@ private:
     for (size_type i = 0; i < size(); ++i) {
       _elements[i] = oldElements[i];
     }
-
+    _end += size();
     _allocator.deallocate(oldElements, oldCapacity);
   }
 
