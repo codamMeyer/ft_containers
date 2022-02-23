@@ -13,6 +13,12 @@ template <class T, class Allocator = std::allocator<T>> class vector {
   public:
     vector_iterator() : value(NULL) {}
     vector_iterator(T *value) : value(value) {}
+    vector_iterator(const vector_iterator &other) : value(other.value) {}
+
+    vector_iterator &operator=(const vector_iterator &other) {
+      value = other.value;
+      return *this;
+    }
 
     T &operator*() { return *value; };
 
@@ -46,6 +52,16 @@ template <class T, class Allocator = std::allocator<T>> class vector {
     };
 
     vector_iterator &operator-=(int amount) {
+      value -= amount;
+      return *this;
+    };
+
+    vector_iterator operator+(int amount) {
+      value += amount;
+      return *this;
+    };
+
+    vector_iterator operator-(int amount) {
       value -= amount;
       return *this;
     };
@@ -157,8 +173,9 @@ public:
   const_iterator end() const { return _end; };
   // iterator rend();
   // iterator rbegin();
-  // const_iterator rbegin() const noexcep;
-  // const_iterator rend() const noexcep;
+  // const_iterator rbegin() const;
+  // const_iterator rend() const;
+
 private:
   size_type getNewCapacity() const {
 
