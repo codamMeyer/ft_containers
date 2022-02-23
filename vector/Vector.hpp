@@ -20,9 +20,21 @@ template <class T, class Allocator = std::allocator<T>> class vector {
       return *this;
     }
 
+    bool operator==(const vector_iterator &other) const {
+      return value == other.value;
+    };
+
+    bool operator!=(const vector_iterator &other) const {
+      return !(*this == other);
+    };
+
     T &operator*() { return *value; };
 
     const T &operator*() const { return *value; };
+
+    T *operator->() { return value; };
+
+    const T *operator->() const { return value; };
 
     vector_iterator &operator++() {
       ++value;

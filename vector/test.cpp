@@ -5,25 +5,25 @@ class EmptyVectorTest : public ::testing::Test {
 public:
   typedef ft::vector<int>::difference_type difference_type;
 
-  EmptyVectorTest() : const_vec(vec){};
+  EmptyVectorTest() : constVec(vec){};
 
   ft::vector<int> vec;
-  const ft::vector<int> &const_vec;
+  const ft::vector<int> &constVec;
 };
 
 TEST_F(EmptyVectorTest, atInvalidPos) {
   EXPECT_THROW(vec.at(0), std::out_of_range);
-  EXPECT_THROW(const_vec.at(0), std::out_of_range);
+  EXPECT_THROW(constVec.at(0), std::out_of_range);
 }
-TEST_F(EmptyVectorTest, empty) { EXPECT_TRUE(const_vec.empty()); }
+TEST_F(EmptyVectorTest, empty) { EXPECT_TRUE(constVec.empty()); }
 
-TEST_F(EmptyVectorTest, size) { EXPECT_EQ(const_vec.size(), 0); }
+TEST_F(EmptyVectorTest, size) { EXPECT_EQ(constVec.size(), 0); }
 
 TEST_F(EmptyVectorTest, maxSize) {
-  EXPECT_EQ(const_vec.max_size(), std::numeric_limits<difference_type>::max());
+  EXPECT_EQ(constVec.max_size(), std::numeric_limits<difference_type>::max());
 }
 
-TEST_F(EmptyVectorTest, capacity) { EXPECT_EQ(const_vec.capacity(), 0); }
+TEST_F(EmptyVectorTest, capacity) { EXPECT_EQ(constVec.capacity(), 0); }
 
 TEST_F(EmptyVectorTest, pushBack) {
   EXPECT_NO_THROW(vec.push_back(2));
@@ -36,38 +36,38 @@ class VectorTest : public ::testing::Test {
 public:
   typedef ft::vector<int>::size_type size_type;
 
-  VectorTest() : vec(1, 5), const_vec(vec){};
+  VectorTest() : vec(1, 5), constVec(vec){};
 
   ft::vector<int> vec;
-  const ft::vector<int> &const_vec;
+  const ft::vector<int> &constVec;
 };
 
 TEST_F(VectorTest, at) {
   EXPECT_EQ(vec.at(0), 5);
-  EXPECT_EQ(const_vec.at(0), 5);
+  EXPECT_EQ(constVec.at(0), 5);
 }
 
 TEST_F(VectorTest, operatorIndex) {
   EXPECT_EQ(vec[0], 5);
-  EXPECT_EQ(const_vec[0], 5);
+  EXPECT_EQ(constVec[0], 5);
 }
 
 TEST_F(VectorTest, front) {
   vec.push_back(1);
   EXPECT_EQ(vec.front(), 5);
-  EXPECT_EQ(const_vec.front(), 5);
+  EXPECT_EQ(constVec.front(), 5);
 }
 
 TEST_F(VectorTest, back) {
   vec.push_back(1);
   EXPECT_EQ(vec.back(), 1);
-  EXPECT_EQ(const_vec.back(), 1);
+  EXPECT_EQ(constVec.back(), 1);
 }
 
 TEST_F(VectorTest, data) {
   vec.push_back(1);
   EXPECT_EQ(*vec.data(), vec.front());
-  EXPECT_EQ(*const_vec.data(), vec.front());
+  EXPECT_EQ(*constVec.data(), vec.front());
 }
 
 TEST_F(VectorTest, nonEmpty) { EXPECT_FALSE(vec.empty()); }
@@ -115,12 +115,12 @@ public:
 
 TEST_F(VectorIteratorTest, begin) {
   EXPECT_EQ(*vec.begin(), 5);
-  EXPECT_EQ(*const_vec.begin(), 5);
+  EXPECT_EQ(*constVec.begin(), 5);
 }
 
 TEST_F(VectorIteratorTest, end) {
-  vec.end();       // TODO make a real test
-  const_vec.end(); // TODO make a real test
+  vec.end();      // TODO make a real test
+  constVec.end(); // TODO make a real test
 }
 
 TEST_F(VectorIteratorTest, copyConstructor) {
@@ -139,11 +139,41 @@ TEST_F(VectorIteratorTest, assignmentOperator) {
   EXPECT_EQ(*copy, *it);
 }
 
+TEST_F(VectorIteratorTest, equal) {
+  ft::vector<int>::iterator it = vec.end();
+  const ft::vector<int>::iterator constIt = vec.end();
+
+  EXPECT_TRUE(it == vec.end());
+  EXPECT_TRUE(constIt == constVec.end());
+  EXPECT_FALSE(it == vec.begin());
+  EXPECT_FALSE(constIt == constVec.begin());
+}
+
+TEST_F(VectorIteratorTest, notEqual) {
+  ft::vector<int>::iterator it = vec.end();
+  const ft::vector<int>::iterator constIt = vec.end();
+
+  EXPECT_TRUE(it != vec.begin());
+  EXPECT_TRUE(constIt != constVec.begin());
+  EXPECT_FALSE(it != vec.end());
+  EXPECT_FALSE(constIt != constVec.end());
+}
+
 TEST_F(VectorIteratorTest, dereference) {
   *vec.begin() = 7;
 
   EXPECT_EQ(*vec.begin(), 7);
-  EXPECT_EQ(*const_vec.begin(), 7);
+  EXPECT_EQ(*constVec.begin(), 7);
+}
+
+TEST_F(VectorIteratorTest, arrow) {
+  ft::vector<std::pair<int, char>> vecPair(1);
+  ft::vector<std::pair<int, char>>::iterator it = vecPair.begin();
+
+  it->first = 2;
+  it->second = 'a';
+  EXPECT_EQ(it->first, 2);
+  EXPECT_EQ(it->second, 'a');
 }
 
 TEST_F(VectorIteratorTest, preIncrement) {
