@@ -1,5 +1,6 @@
 #include "Vector.hpp"
 #include <gtest/gtest.h>
+#include <iostream>
 
 class EmptyVectorTest : public ::testing::Test {
 public:
@@ -185,6 +186,7 @@ TEST_F(VectorIteratorTest, preIncrement) {
 TEST_F(VectorIteratorTest, postIncrement) {
   ft::vector<int>::iterator it = vec.begin();
   ft::vector<int>::iterator old = it++;
+
   EXPECT_EQ(*old, 5);
   EXPECT_EQ(*it, 7);
 }
@@ -200,6 +202,22 @@ TEST_F(VectorIteratorTest, postDecrement) {
   --it;
   ft::vector<int>::iterator old = it--;
   EXPECT_EQ(*old, 9);
+  EXPECT_EQ(*it, 7);
+}
+
+TEST_F(VectorIteratorTest, preIncrementAndDereference) {
+  ft::vector<int>::iterator it = vec.begin();
+  *++it = 15;
+
+  EXPECT_EQ(*vec.begin(), 5);
+  EXPECT_EQ(*it, 15);
+}
+
+TEST_F(VectorIteratorTest, postIncrementAndDereference) {
+  ft::vector<int>::iterator it = vec.begin();
+  *it++ = 15;
+
+  EXPECT_EQ(*vec.begin(), 15);
   EXPECT_EQ(*it, 7);
 }
 
