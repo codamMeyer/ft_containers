@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Install gtest manually
-      run: sudo apt-get install libgtest-dev cmake && cd /usr/src/gtest && cmake CMakeLists.txt 
+      run: sudo apt-get install libgtest-dev cmake && sudo cd /usr/src/gtest && sudo cmake CMakeLists.txt 
     - uses: actions/checkout@v2
     - name: Make Vector
       run: cd vector && make test && ./vectorTest
