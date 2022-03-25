@@ -1,17 +1,20 @@
-name: googletest-project
+name: C/C++ CI
+
 on:
   push:
-    paths-ignore:
-    - 'resources/**'
-    - 'README.md'
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  test-project:
-    name: Test Project
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
+    - name: Install gtest manually
+      run: sudo apt-get install libgtest-dev && sudo apt-get install cmake && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make sudo cp *.a /usr/lib
     - uses: actions/checkout@v2
-    - name: Test project with googletest.
-      uses: arvsrao/googletest-action@master
     - name: Make Vector
       run: cd vector && make test && ./vectorTest
+   
