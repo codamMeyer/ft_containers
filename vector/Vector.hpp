@@ -11,6 +11,7 @@ namespace ft {
 template <class T, class Allocator = std::allocator<T>> class vector {
   class vector_iterator {
   public:
+
     vector_iterator() : value(NULL) {}
     vector_iterator(T *value) : value(value) {}
     vector_iterator(const vector_iterator &other) : value(other.value) {}
@@ -149,7 +150,7 @@ public:
     return _size; // std::distance(begin(), end())
   };
   size_type max_size() const {
-    return std::numeric_limits<difference_type>::max();
+    return std::numeric_limits<difference_type>::max() / sizeof(value_type);
   };
   size_type capacity() const { return _capacity; };
   void reserve(size_type new_cap) {
