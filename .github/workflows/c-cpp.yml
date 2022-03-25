@@ -13,3 +13,5 @@ jobs:
     - uses: actions/checkout@v2
     - name: Test project with googletest.
       uses: arvsrao/googletest-action@master
+    - name: Make Vector
+      run: cd vector && make test && ./vectorTest
