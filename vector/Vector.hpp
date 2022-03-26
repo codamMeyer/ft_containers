@@ -174,9 +174,35 @@ public:
     ++_size;
     ++_end;
   };
-  // void pop_back();
-  // void resize( size_type count );
-  // void resize( size_type count, T value = T() );
+  
+  void pop_back()
+  {
+    --_size;
+    --_end;
+  }
+  
+  void resize( size_type count, T value = T())
+  {
+    if (size() == count)
+    {
+      return;
+    }
+    if (size() < count)
+    {
+      size_t oldSize = size(); 
+      reallocate(count);
+      _size = count;
+      for (size_type i = oldSize; i < size(); ++i) {
+        _elements[i] = value;
+      }
+    }
+    else if (size() > count)
+    {
+      _end -= _size - count;
+      _size = count;
+    }
+  }
+
   // void swap( vector& other );
 
   // ITERATOR
@@ -223,6 +249,12 @@ private:
   iterator _begin;
   iterator _end;
 
+};
+
+} // namespace ft
+#endif // VECTOR_H
+
+
   // PUBLIC MEMBER FUNCTIONS
   // vector &operator=(const vector &other) {}
   // void assign(size_type count, const T &value);
@@ -262,7 +294,3 @@ private:
   // std::swap(std::vector)
   // template <class T, class Alloc>
   // void swap(std::vector<T, Alloc> &lhs, std::vector<T, Alloc> &rhs);
-};
-
-} // namespace ft
-#endif // VECTOR_H

@@ -112,6 +112,7 @@ TEST_F(VectorTest, pushBackWithoutCapacity) {
   EXPECT_EQ(ftVec.size(), stdVec.size());
   EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
+
 TEST_F(VectorTest, pushBackWithCapacity) {
   ftVec.reserve(3);
   ftVec.push_back(2);
@@ -127,6 +128,85 @@ TEST_F(VectorTest, pushBackWithCapacity) {
   EXPECT_EQ(ftVec.size(), stdVec.size());
   EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
+
+TEST_F(VectorTest, popBack) {
+  ftVec.push_back(100);
+  stdVec.push_back(100);
+
+  EXPECT_EQ(ftVec.back(), stdVec.back());
+  EXPECT_EQ(ftVec.size(), stdVec.size());
+  EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+
+  ftVec.pop_back();
+  stdVec.pop_back();
+}
+
+TEST_F(VectorTest, popBackLastOneElementContainer) {
+  EXPECT_EQ(ftVec.back(), stdVec.back());
+  EXPECT_EQ(ftVec.size(), stdVec.size());
+  EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+
+  ftVec.pop_back();
+  stdVec.pop_back();
+
+  EXPECT_EQ(ftVec.empty(), stdVec.empty());
+  EXPECT_EQ(ftVec.size(), stdVec.size());
+  EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+}
+
+TEST_F(VectorTest, resizeSameSize) {
+  ftVec.resize(1);
+  stdVec.resize(1);
+
+  EXPECT_EQ(ftVec.empty(), stdVec.empty());
+  EXPECT_EQ(ftVec.size(), stdVec.size());
+  EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+  EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+}
+
+TEST_F(VectorTest, resizeWithoutValueAndBiggerThanOriginalSize) {
+  ftVec.resize(5);
+  stdVec.resize(5);
+
+  EXPECT_EQ(ftVec.empty(), stdVec.empty());
+  EXPECT_EQ(ftVec.size(), stdVec.size());
+  EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+  EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+  EXPECT_EQ(ftVec.at(1), stdVec.at(1));
+  EXPECT_EQ(ftVec.at(2), stdVec.at(2));
+  EXPECT_EQ(ftVec.at(3), stdVec.at(3));
+  EXPECT_EQ(ftVec.at(4), stdVec.at(4));
+}
+
+TEST_F(VectorTest, resizeSmallerThanOriginal) {
+  for (int i = 0; i < 10; ++i)
+  {
+    ftVec.push_back(3);
+    stdVec.push_back(3);
+  }
+
+  ftVec.resize(5);
+  stdVec.resize(5);
+
+  EXPECT_EQ(ftVec.empty(), stdVec.empty());
+  EXPECT_EQ(ftVec.size(), stdVec.size());
+  EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+  EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+  EXPECT_EQ(ftVec.at(1), stdVec.at(1));
+  EXPECT_EQ(ftVec.at(2), stdVec.at(2));
+  EXPECT_EQ(ftVec.at(3), stdVec.at(3));
+  EXPECT_EQ(ftVec.at(4), stdVec.at(4));
+  EXPECT_EQ(*ftVec.end(), *stdVec.end());
+  
+  EXPECT_THROW(stdVec.at(5), std::out_of_range);
+  EXPECT_THROW(ftVec.at(5), std::out_of_range);
+
+}
+
+
+/*************************************************************/
+/*                       ITERATORS TEST                      */
+/*************************************************************/
 
 class VectorIteratorTest : public VectorTest {
 public:
