@@ -345,35 +345,23 @@ TEST_F(VectorTest, clearContainerWithMoreElements)
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
 
-// TEST_F(VectorTest, insertWithOneelement)
-// {
-//     ft::vector<int> myVec;
-//     myVec.reserve(5);
-//     myVec.push_back(400);
-//     myVec.push_back(500);
-//     myVec.insert(myVec.begin(), 300);
+TEST_F(VectorTest, insertWithOneelement)
+{
+    ft::vector<int> myVec;
+    myVec.reserve(5);
+    myVec.push_back(400);
+    myVec.push_back(500);
 
-//     for(ft::vector<int>::iterator it = myVec.begin(); it != myVec.end(); ++it)
-//     {
-//         std::cout << *it << " ";
-//     }
-//     std::cout << std::endl;
-//     // stdVec.insert(stdVec.begin(), 100);
-//     // ftVec.insert(ftVec.begin(), 100);
+    myVec.insert(myVec.begin(), 300);
 
-//     // stdVec.insert(stdVec.begin(), 200);
-//     // ftVec.insert(ftVec.begin(), 200);
-
-//     // stdVec.insert(stdVec.begin(), 300);
-
-//     // EXPECT_EQ(stdVec.size(), ftVec.size());
-//     // EXPECT_EQ(stdVec.capacity(), ftVec.capacity());
-
-//     // EXPECT_EQ(stdVec.at(0), ftVec.at(0));
-//     // EXPECT_EQ(stdVec.at(1), ftVec.at(1));
-//     // EXPECT_EQ(stdVec.at(2), ftVec.at(2));
-//     // EXPECT_EQ(stdVec.at(3), ftVec.at(3));
-// }
+    EXPECT_EQ(myVec.at(0), 300);
+    EXPECT_EQ(myVec.at(1), 400);
+    EXPECT_EQ(myVec.at(2), 500);
+    EXPECT_EQ(myVec.size(), 3);
+    EXPECT_EQ(myVec.capacity(), 5);
+    EXPECT_EQ(*myVec.begin(), 300);
+    EXPECT_EQ(*(myVec.end() - 1), 500);
+}
 
 /*************************************************************/
 /*                       ITERATORS TEST                      */
@@ -527,24 +515,28 @@ TEST_F(VectorIteratorTest, postIncrementAndDereference)
 
 TEST_F(VectorIteratorTest, plus)
 {
-    ft::vector<int>::iterator it = ftVec.begin();
-    it = it + 2;
-    EXPECT_EQ(*it, 9);
+    ft::vector<int>::iterator it1 = ftVec.begin();
+    ft::vector<int>::iterator it2 = it1 + 2;
+    EXPECT_EQ(*it1, 5);
+    EXPECT_EQ(*it2, 9);
 
-    it = ftVec.begin();
-    it = 2 + it;
-    EXPECT_EQ(*it, 9);
+    ft::vector<int>::iterator it3 = ftVec.begin();
+    ft::vector<int>::iterator it4 = 2 + it3;
+    EXPECT_EQ(*it3, 5);
+    EXPECT_EQ(*it4, 9);
 }
 
 TEST_F(VectorIteratorTest, minus)
 {
-    ft::vector<int>::iterator it = ftVec.end();
-    it = it - 2;
-    EXPECT_EQ(*it, 7);
+    ft::vector<int>::iterator it1 = ftVec.end();
+    ft::vector<int>::iterator it2 = it1 - 2;
+    EXPECT_EQ(*(it1 - 1), 9);
+    EXPECT_EQ(*it2, 7);
 
-    it = ftVec.end();
-    it = 2 - it;
-    EXPECT_EQ(*it, 7);
+    ft::vector<int>::iterator it3 = ftVec.end();
+    ft::vector<int>::iterator it4 = 2 - it3;
+    EXPECT_EQ(*(it3 - 1), 9);
+    EXPECT_EQ(*it4, 7);
 }
 
 TEST_F(VectorIteratorTest, lessThan)

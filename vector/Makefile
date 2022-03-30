@@ -1,7 +1,7 @@
 CC=clang++
 CFLAGS= -Wall -Werror -Wextra -std=c++98
 
-TEST_FLAGS= -Wall -Werror -Wextra -fsanitize=address -fsanitize=leak -Wl,-rpath=/usr/local/lib -lgtest -lgtest_main -lpthread
+TEST_FLAGS= -Wall -Werror -Wextra -fsanitize=address -fsanitize=leak -Wl,-rpath=/usr/local/lib -lgtest -lgtest_main -lpthread -ggdb
 TEST_CRITERION_FLAG= -lcriterion -L /usr/local/lib -I /usr/local/include -std=c++11 -Wl,-rpath=/usr/local/lib
 
 NAME=vector

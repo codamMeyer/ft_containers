@@ -91,8 +91,9 @@ class vector
 
         vector_iterator operator+(int amount)
         {
-            _value += amount;
-            return *this;
+            vector_iterator ret(*this);
+            ret._value += amount;
+            return ret;
         };
 
         friend vector_iterator operator+(int amount, vector_iterator other)
@@ -103,8 +104,9 @@ class vector
 
         vector_iterator operator-(int amount)
         {
-            _value -= amount;
-            return *this;
+            vector_iterator ret(*this);
+            ret._value -= amount;
+            return ret;
         };
 
         friend vector_iterator operator-(int amount, vector_iterator other)
@@ -297,21 +299,21 @@ public:
         _size = 0;
     }
 
-    // iterator insert(iterator pos, const T& value)
-    // {
-    //     if(size() + 1 < capacity())
-    //     {
-    //         for(iterator it = (end()); it > pos; --it)
-    //         {
-    //             *it = *(it - 1);
-    //         }
-    //         ++_end;
-    //         ++_size;
-    //         *pos = value;
-    //     }
-    //     // else realloc 2x capacity
-    //     return pos;
-    // }
+    iterator insert(iterator pos, const T& value)
+    {
+        if(size() + 1 < capacity())
+        {
+            for(iterator it = end(); it != pos; --it)
+            {
+                *it = *(it - 1);
+            }
+            ++_end;
+            ++_size;
+            *pos = value;
+        }
+        // else realloc 2x capacity
+        return pos;
+    }
 
     // void insert( iterator pos, size_type count, const T& value );
     // iterator erase( iterator pos );
