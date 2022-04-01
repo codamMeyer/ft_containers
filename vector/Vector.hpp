@@ -306,22 +306,33 @@ public:
 
     iterator insert(iterator pos, const T& value)
     {
-        difference_type index = pos - begin();
         if(size() + 1 > capacity())
         {
-            reallocate(getNewCapacity());
+            difference_type diff = pos - begin();
+            reallocate(size() + 1);
+            pos = begin() + diff;
         }
-        for(difference_type cur = size(); cur > index; --cur)
+        for(iterator it = end(); it != pos; --it)
         {
-            _elements[cur] = _elements[cur - 1];
+            *it = *(it - 1);
         }
         ++_end;
         ++_size;
-        _elements[index] = value;
-        return &(_elements[index]);
+        *pos = value;
+        return pos;
     }
 
-    // void insert( iterator pos, size_type count, const T& value );
+    void insert(iterator pos, size_type count, const T& value)
+    {
+        for(size_type i = 0; i < count; ++i)
+        {
+            pos = insert(pos, value);
+        }
+    }
+
+    // template< class InputIt >
+    // void insert( iterator pos, InputIt first, InputIt last );
+
     // iterator erase( iterator pos );
     // iterator erase( iterator first, iterator last );
     void push_back(const T& value)

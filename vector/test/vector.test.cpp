@@ -21,30 +21,55 @@ public:
     const std::vector<int>& stdConstVec;
 };
 
+///////////////////////////////////////////////////////////////
+//                          at()                             //
+///////////////////////////////////////////////////////////////
+
 TEST_F(EmptyVectorTest, atInvalidPos)
 {
     EXPECT_THROW(ftVec.at(0), std::out_of_range);
     EXPECT_THROW(ftConstVec.at(0), std::out_of_range);
 }
+
+///////////////////////////////////////////////////////////////
+//                       empty()                             //
+///////////////////////////////////////////////////////////////
+
 TEST_F(EmptyVectorTest, empty)
 {
     EXPECT_EQ(ftConstVec.empty(), stdConstVec.empty());
 }
+
+///////////////////////////////////////////////////////////////
+//                        size()                             //
+///////////////////////////////////////////////////////////////
 
 TEST_F(EmptyVectorTest, size)
 {
     EXPECT_EQ(ftConstVec.size(), stdConstVec.size());
 }
 
+///////////////////////////////////////////////////////////////
+//                       maxSize()                           //
+///////////////////////////////////////////////////////////////
+
 TEST_F(EmptyVectorTest, maxSize)
 {
     EXPECT_EQ(ftConstVec.max_size(), stdConstVec.max_size());
 }
 
+///////////////////////////////////////////////////////////////
+//                      capacity()                           //
+///////////////////////////////////////////////////////////////
+
 TEST_F(EmptyVectorTest, capacity)
 {
     EXPECT_EQ(ftConstVec.capacity(), stdConstVec.capacity());
 }
+
+///////////////////////////////////////////////////////////////
+//                        push_back()                        //
+///////////////////////////////////////////////////////////////
 
 TEST_F(EmptyVectorTest, pushBack)
 {
@@ -55,6 +80,10 @@ TEST_F(EmptyVectorTest, pushBack)
     EXPECT_EQ(ftVec.size(), stdVec.size());
     EXPECT_EQ(ftVec.at(0), stdVec.at(0));
 }
+
+///////////////////////////////////////////////////////////////
+//                   NON EMPTY VECTOR                        //
+///////////////////////////////////////////////////////////////
 
 class VectorTest : public ::testing::Test
 {
@@ -74,17 +103,29 @@ public:
     const std::vector<int>& stdConstVec;
 };
 
+///////////////////////////////////////////////////////////////
+//                          at()                             //
+///////////////////////////////////////////////////////////////
+
 TEST_F(VectorTest, at)
 {
     EXPECT_EQ(ftVec.at(0), stdVec.at(0));
     EXPECT_EQ(ftConstVec.at(0), stdConstVec.at(0));
 }
 
+///////////////////////////////////////////////////////////////
+//                        operator[]                         //
+///////////////////////////////////////////////////////////////
+
 TEST_F(VectorTest, operatorIndex)
 {
     EXPECT_EQ(ftVec[0], stdVec[0]);
     EXPECT_EQ(ftConstVec[0], stdConstVec[0]);
 }
+
+///////////////////////////////////////////////////////////////
+//                        front()                            //
+///////////////////////////////////////////////////////////////
 
 TEST_F(VectorTest, front)
 {
@@ -94,6 +135,10 @@ TEST_F(VectorTest, front)
     EXPECT_EQ(ftConstVec.front(), stdConstVec.front());
 }
 
+///////////////////////////////////////////////////////////////
+//                          back()                           //
+///////////////////////////////////////////////////////////////
+
 TEST_F(VectorTest, back)
 {
     ftVec.push_back(1);
@@ -102,28 +147,48 @@ TEST_F(VectorTest, back)
     EXPECT_EQ(ftConstVec.back(), stdConstVec.back());
 }
 
+///////////////////////////////////////////////////////////////
+//                          data()                           //
+///////////////////////////////////////////////////////////////
+
 TEST_F(VectorTest, data)
 {
     ftVec.push_back(1);
     stdVec.push_back(1);
-    EXPECT_EQ(ftVec.front(), stdVec.front());
-    EXPECT_EQ(ftConstVec.front(), stdConstVec.front());
+    EXPECT_EQ(*ftVec.data(), *stdVec.data());
+    EXPECT_EQ(*ftConstVec.data(), *stdConstVec.data());
 }
+
+///////////////////////////////////////////////////////////////
+//                          empty()                          //
+///////////////////////////////////////////////////////////////
 
 TEST_F(VectorTest, nonEmpty)
 {
     EXPECT_EQ(ftVec.empty(), stdVec.empty());
 }
 
+///////////////////////////////////////////////////////////////
+//                          size()                           //
+///////////////////////////////////////////////////////////////
+
 TEST_F(VectorTest, sizeOneElement)
 {
     EXPECT_EQ(ftVec.size(), stdVec.size());
 }
 
+///////////////////////////////////////////////////////////////
+//                         capacity()                        //
+///////////////////////////////////////////////////////////////
+
 TEST_F(VectorTest, capacity)
 {
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
+
+///////////////////////////////////////////////////////////////
+//                       reserve()                           //
+///////////////////////////////////////////////////////////////
 
 TEST_F(VectorTest, reserveInvalidCapacity)
 {
@@ -139,6 +204,10 @@ TEST_F(VectorTest, reserveValidCapacity)
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
     EXPECT_EQ(ftVec.at(0), stdVec.at(0));
 }
+
+///////////////////////////////////////////////////////////////
+//                     push_back()                           //
+///////////////////////////////////////////////////////////////
 
 TEST_F(VectorTest, pushBackWithoutCapacity)
 {
@@ -167,6 +236,10 @@ TEST_F(VectorTest, pushBackWithCapacity)
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
 
+///////////////////////////////////////////////////////////////
+//                     pop_back()                            //
+///////////////////////////////////////////////////////////////
+
 TEST_F(VectorTest, popBack)
 {
     ftVec.push_back(100);
@@ -193,6 +266,10 @@ TEST_F(VectorTest, popBackLastOneElementContainer)
     EXPECT_EQ(ftVec.size(), stdVec.size());
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
+
+///////////////////////////////////////////////////////////////
+//                       resize()                            //
+///////////////////////////////////////////////////////////////
 
 TEST_F(VectorTest, resizeSameSize)
 {
@@ -277,9 +354,12 @@ TEST_F(VectorTest, resizeSmallerThanOriginal)
     EXPECT_THROW(ftVec.at(5), std::out_of_range);
 }
 
+///////////////////////////////////////////////////////////////
+//                        swap()                             //
+///////////////////////////////////////////////////////////////
+
 TEST_F(VectorTest, swapFunction)
 {
-
     ft::vector<int>::iterator ftVec_beg = ftVec.begin();
     ft::vector<int>::iterator ftVec_end = ftVec.end() - 1;
 
@@ -322,6 +402,19 @@ TEST_F(VectorTest, swapTwoEmptyVectors)
     EXPECT_EQ(&(*first_end), &(*(second.end() - 1)));
 }
 
+///////////////////////////////////////////////////////////////
+//                         clear()                           //
+///////////////////////////////////////////////////////////////
+
+TEST_F(EmptyVectorTest, clearContainer)
+{
+    ftVec.clear();
+    stdVec.clear();
+
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+}
+
 TEST_F(VectorTest, clearContainerWithOneElement)
 {
     ftVec.clear();
@@ -345,25 +438,68 @@ TEST_F(VectorTest, clearContainerWithMoreElements)
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
 
-TEST_F(VectorTest, insertWithEnoughCapacity)
+///////////////////////////////////////////////////////////////
+//                        insert()                           //
+///////////////////////////////////////////////////////////////
+
+TEST_F(EmptyVectorTest, insertInBeginEmptyVector)
 {
-    ft::vector<int> myVec;
-    myVec.reserve(5);
-    myVec.push_back(400);
-    myVec.push_back(500);
+    ftVec.insert(ftVec.begin(), 300);
 
-    myVec.insert(myVec.begin(), 300);
-
-    EXPECT_EQ(myVec.at(0), 300);
-    EXPECT_EQ(myVec.at(1), 400);
-    EXPECT_EQ(myVec.at(2), 500);
-    EXPECT_EQ(myVec.size(), 3);
-    EXPECT_EQ(myVec.capacity(), 5);
-    EXPECT_EQ(*myVec.begin(), 300);
-    EXPECT_EQ(*(myVec.end() - 1), 500);
+    EXPECT_EQ(ftVec.at(0), 300);
+    EXPECT_EQ(ftVec.size(), 1);
+    EXPECT_EQ(ftVec.capacity(), 1);
+    EXPECT_EQ(*ftVec.begin(), 300);
+    EXPECT_EQ(*(ftVec.end() - 1), 300);
 }
 
-TEST_F(VectorTest, insertWithoutCapacity)
+TEST_F(VectorTest, insertInEndEmptyVector)
+{
+    ft::vector<int> myVec;
+    myVec.insert(myVec.end(), 300);
+
+    EXPECT_EQ(myVec.at(0), 300);
+    EXPECT_EQ(myVec.size(), 1);
+    EXPECT_EQ(myVec.capacity(), 1);
+    EXPECT_EQ(*myVec.begin(), 300);
+    EXPECT_EQ(*(myVec.end() - 1), 300);
+}
+
+TEST_F(EmptyVectorTest, insertBeginWithEnoughCapacity)
+{
+    ftVec.reserve(5);
+    ftVec.push_back(400);
+    ftVec.push_back(500);
+
+    ftVec.insert(ftVec.begin(), 300);
+
+    EXPECT_EQ(ftVec.at(0), 300);
+    EXPECT_EQ(ftVec.at(1), 400);
+    EXPECT_EQ(ftVec.at(2), 500);
+    EXPECT_EQ(ftVec.size(), 3);
+    EXPECT_EQ(ftVec.capacity(), 5);
+    EXPECT_EQ(*ftVec.begin(), 300);
+    EXPECT_EQ(*(ftVec.end() - 1), 500);
+}
+
+TEST_F(EmptyVectorTest, insertEndWithEnoughCapacity)
+{
+    ftVec.reserve(5);
+    ftVec.push_back(400);
+    ftVec.push_back(500);
+
+    ftVec.insert(ftVec.end(), 300);
+
+    EXPECT_EQ(ftVec.at(0), 400);
+    EXPECT_EQ(ftVec.at(1), 500);
+    EXPECT_EQ(ftVec.at(2), 300);
+    EXPECT_EQ(ftVec.size(), 3);
+    EXPECT_EQ(ftVec.capacity(), 5);
+    EXPECT_EQ(*ftVec.begin(), 400);
+    EXPECT_EQ(*(ftVec.end() - 1), 300);
+}
+
+TEST_F(VectorTest, insertBeginWithoutCapacity)
 {
     EXPECT_EQ(*ftVec.insert(ftVec.begin(), 300), 300);
     EXPECT_EQ(*stdVec.insert(stdVec.begin(), 300), 300);
@@ -372,4 +508,31 @@ TEST_F(VectorTest, insertWithoutCapacity)
     EXPECT_EQ(ftVec.at(1), stdVec.at(1));
     EXPECT_EQ(ftVec.size(), stdVec.size());
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+}
+
+TEST_F(VectorTest, insertEndWithoutCapacity)
+{
+    EXPECT_EQ(*ftVec.insert(ftVec.end(), 300), 300);
+    EXPECT_EQ(*stdVec.insert(stdVec.end(), 300), 300);
+
+    EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+    EXPECT_EQ(ftVec.at(1), stdVec.at(1));
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+}
+
+TEST_F(VectorTest, insertCount)
+{
+    ftVec.insert(ftVec.begin(), 6, 300);
+    stdVec.insert(stdVec.begin(), 6, 300);
+
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+    EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+    EXPECT_EQ(ftVec.at(1), stdVec.at(1));
+    EXPECT_EQ(ftVec.at(2), stdVec.at(2));
+    EXPECT_EQ(ftVec.at(3), stdVec.at(3));
+    EXPECT_EQ(ftVec.at(4), stdVec.at(4));
+    EXPECT_EQ(ftVec.at(5), stdVec.at(5));
+    EXPECT_EQ(ftVec.at(6), stdVec.at(6));
 }
