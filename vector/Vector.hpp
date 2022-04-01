@@ -115,6 +115,11 @@ class vector
             return other;
         };
 
+        size_t operator-(vector_iterator other)
+        {
+            return (this->_value - other._value);
+        };
+
         bool operator<(const vector_iterator& other) const
         {
             return this->_value < other._value;
@@ -301,18 +306,19 @@ public:
 
     iterator insert(iterator pos, const T& value)
     {
-        if(size() + 1 < capacity())
+        difference_type index = pos - begin();
+        if(size() + 1 > capacity())
         {
-            for(iterator it = end(); it != pos; --it)
-            {
-                *it = *(it - 1);
-            }
-            ++_end;
-            ++_size;
-            *pos = value;
+            reallocate(getNewCapacity());
         }
-        // else realloc 2x capacity
-        return pos;
+        for(difference_type cur = size(); cur > index; --cur)
+        {
+            _elements[cur] = _elements[cur - 1];
+        }
+        ++_end;
+        ++_size;
+        _elements[index] = value;
+        return &(_elements[index]);
     }
 
     // void insert( iterator pos, size_type count, const T& value );
@@ -442,7 +448,6 @@ public:
 private:
     size_type getNewCapacity() const
     {
-
         if(capacity() == 0)
         {
             return 1;
@@ -462,7 +467,6 @@ private:
         {
             return;
         }
-
         for(size_type i = 0; i < size(); ++i)
         {
             _elements[i] = oldElements[i];
