@@ -115,7 +115,7 @@ class vector
             return other;
         };
 
-        size_t operator-(vector_iterator other)
+        size_t operator-(vector_iterator other) const
         {
             return (this->_value - other._value);
         };
@@ -182,15 +182,13 @@ public:
     // const_reverse_iterator
 
     vector()
-        : _size(0)
-        , _capacity(0)
+        : _capacity(0)
         , _elements(NULL)
         , _begin(NULL)
         , _end(NULL){};
 
     explicit vector(size_type count, const T& value = T(), const Allocator& alloc = Allocator())
         : _allocator(alloc)
-        , _size(count)
         , _capacity(count)
         , _elements(NULL)
     {
@@ -198,7 +196,7 @@ public:
         _elements = _allocator.allocate(count);
         _allocator.construct(_elements, value);
         _begin = _elements;
-        _end = &_elements[size()];
+        _end = &_elements[count];
         for(size_t i = 0; i < size(); ++i)
         {
             _elements[i] = value;
@@ -274,12 +272,12 @@ public:
     // CAPACITY
     bool empty() const
     {
-        return _size == 0;
+        return size() == 0;
     };
     size_type size() const
     {
         // TODO
-        return _size; // std::distance(begin(), end())
+        return distance(begin(), end()); // std::distance(begin(), end())
     };
     size_type max_size() const
     {
@@ -301,7 +299,7 @@ public:
     // MODIFIERS
     void clear()
     {
-        _size = 0;
+        _end = _begin;
     }
 
     iterator insert(iterator pos, const T& value)
@@ -317,7 +315,6 @@ public:
             *it = *(it - 1);
         }
         ++_end;
-        ++_size;
         *pos = value;
         return pos;
     }
@@ -342,14 +339,12 @@ public:
         {
             reallocate(getNewCapacity());
         }
-        _elements[size()] = value;
-        ++_size;
         ++_end;
+        *(_end - 1) = value;
     };
 
     void pop_back()
     {
-        --_size;
         --_end;
     }
 
@@ -359,7 +354,7 @@ public:
         {
             size_t oldSize = size();
             reallocate(count);
-            _size = count;
+            _end = _begin + count;
             for(size_type i = oldSize; i < size(); ++i)
             {
                 _elements[i] = value;
@@ -367,8 +362,7 @@ public:
         }
         else if(size() > count)
         {
-            _end -= _size - count;
-            _size = count;
+            _end -= size() - count;
         }
     }
 
@@ -388,10 +382,6 @@ public:
         size_type capacity_tmp = this->_capacity;
         this->_capacity = other._capacity;
         other._capacity = capacity_tmp;
-
-        size_type size_tmp = this->_size;
-        this->_size = other._size;
-        other._size = size_tmp;
     }
 
     // ITERATOR
@@ -457,6 +447,11 @@ public:
     // void swap(std::vector<T, Alloc> &lhs, std::vector<T, Alloc> &rhs);
 
 private:
+    difference_type distance(iterator first, iterator last) const
+    {
+        return last - first;
+    }
+
     size_type getNewCapacity() const
     {
         if(capacity() == 0)
@@ -468,6 +463,7 @@ private:
 
     void reallocate(size_type new_cap)
     {
+        size_type oldSize = size();
         size_type oldCapacity = capacity();
         pointer oldElements = _elements;
         _elements = _allocator.allocate(new_cap);
@@ -478,16 +474,15 @@ private:
         {
             return;
         }
-        for(size_type i = 0; i < size(); ++i)
+        for(size_type i = 0; i < oldSize; ++i)
         {
             _elements[i] = oldElements[i];
         }
-        _end += size();
+        _end += oldSize;
         _allocator.deallocate(oldElements, oldCapacity);
     }
 
     allocator_type _allocator;
-    size_type _size;
     size_type _capacity;
     pointer _elements;
     iterator _begin;
