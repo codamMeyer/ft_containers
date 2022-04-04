@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install gtest manually
-      run: sudo apt-get install libgtest-dev cmake && cd /usr/src/gtest && cmake CMakeLists.txt 
+    - name: Install gtest
+      run: apt -y install googletest 
     - uses: actions/checkout@v2
     - name: Make Vector
       run: cd vector && make test && ./vectorTest
