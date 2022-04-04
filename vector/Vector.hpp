@@ -336,17 +336,28 @@ public:
             --_end;
             return end();
         }
-        else
-        {
-            for(iterator it = pos; it != end() - 1; ++it)
-            {
-                *it = *(it + 1);
-            }
-            --_end;
-        }
-        return pos;
+        return erase(pos, pos + 1);
     }
-    // iterator erase( iterator first, iterator last );
+
+    iterator erase(iterator first, iterator last)
+    {
+        difference_type diff = distance(first, last);
+        if(diff)
+        {
+            for(iterator it = last; it != end(); ++it)
+            {
+                *first = *it;
+                ++first;
+            }
+        }
+        if(last == end())
+        {
+            return _end -= diff;
+        }
+        _end -= diff;
+        return last - diff;
+    }
+
     void push_back(const T& value)
     {
         // TODO with iterators
@@ -416,6 +427,7 @@ public:
     {
         return _end;
     };
+
     // iterator rend();
     // iterator rbegin();
     // const_iterator rbegin() const;
