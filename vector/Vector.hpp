@@ -272,7 +272,7 @@ public:
     // CAPACITY
     bool empty() const
     {
-        return size() == 0;
+        return begin() == end();
     };
     size_type size() const
     {
@@ -298,6 +298,7 @@ public:
     // MODIFIERS
     void clear()
     {
+        destroyElements(0, size());
         _end = _begin;
     }
 
@@ -371,24 +372,33 @@ public:
 
     void pop_back()
     {
+        if(empty())
+        {
+            return;
+        }
+        _allocator.destroy(_elements + size() - 1);
         --_end;
     }
 
     void resize(size_type count, T value = T())
     {
-        if(capacity() < count)
+        if(count <= size())
         {
-            size_t oldSize = size();
-            reallocate(count);
-            _end = _begin + count;
-            for(size_type i = oldSize; i < size(); ++i)
-            {
-                _elements[i] = value;
-            }
-        }
-        else if(size() > count)
-        {
+            destroyElements(count, size());
             _end -= size() - count;
+
+            return;
+        }
+        if(count > capacity())
+        {
+            // count = roundToEvenNumber(count);
+            reallocate(count);
+        }
+        iterator oldEnd = _end;
+        _end = _begin + count;
+        for(iterator it = oldEnd; it != end(); ++it)
+        {
+            *it = value;
         }
     }
 
@@ -434,44 +444,13 @@ public:
     // const_iterator rend() const;
 
     // OPERATORS OVERLOAD
-    // vector &operator=(const vector &other) {}
+    // vector& operator=(const vector& other);
     // void assign(size_type count, const T &value);
-    // allocator_type get_allocator() const;
 
-    // NON-MEMBER FUNCTIONS
-    // operator==
-    // template <class T, class Alloc>
-    // bool operator==(const std::vector<T, Alloc> &lhs,
-    //                 const std::vector<T, Alloc> &rhs);
-
-    // operator!=
-    // template <class T, class Alloc>
-    // bool operator!=(const std::vector<T, Alloc> &lhs,
-    //                 const std::vector<T, Alloc> &rhs);
-
-    // operator<
-    // template <class T, class Alloc>
-    // bool operator<(const std::vector<T, Alloc> &lhs,
-    //                const std::vector<T, Alloc> &rhs);
-
-    // operator<=
-    // template <class T, class Alloc>
-    // bool operator<=(const std::vector<T, Alloc> &lhs,
-    //                 const std::vector<T, Alloc> &rhs);
-
-    // operator>
-    // template <class T, class Alloc>
-    // bool operator>(const std::vector<T, Alloc> &lhs,
-    //                const std::vector<T, Alloc> &rhs);
-
-    // operator>=
-    // template <class T, class Alloc>
-    // bool operator>=(const std::vector<T, Alloc> &lhs,
-    //                 const std::vector<T, Alloc> &rhs);
-
-    // std::swap(std::vector)
-    // template <class T, class Alloc>
-    // void swap(std::vector<T, Alloc> &lhs, std::vector<T, Alloc> &rhs);
+    allocator_type get_allocator() const
+    {
+        return _allocator;
+    }
 
 private:
     difference_type distance(iterator first, iterator last) const
@@ -487,6 +466,14 @@ private:
         }
         return capacity() * 2;
     };
+
+    void destroyElements(size_type from, size_type to)
+    {
+        for(size_type i = from; i < to; ++i)
+        {
+            _allocator.destroy(_elements + i);
+        }
+    }
 
     void reallocate(size_type new_cap)
     {
@@ -515,6 +502,57 @@ private:
     iterator _begin;
     iterator _end;
 };
+// NON-MEMBER FUNCTIONS
+// operator==
+template <class T, class Alloc>
+bool operator==(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
+{
+    if(lhs.size() != rhs.size())
+    {
+        return false;
+    }
+    typename ft::vector<T>::iterator lit = lhs.begin();
+    typename ft::vector<T>::iterator rit = rhs.begin();
+    for(; lit != lhs.end() && rit != rhs.end(); ++lit, ++rit)
+    {
+        if(*lit != *rit)
+        {
+            return false;
+        }
+    }
+    return true;
+}
 
+// operator!=
+template <class T, class Alloc>
+bool operator!=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
+{
+    return !(lhs == rhs);
+}
+
+// operator<
+// template <class T, class Alloc>
+// bool operator<(const std::vector<T, Alloc> &lhs,
+//                const std::vector<T, Alloc> &rhs);
+
+// operator<=
+// template <class T, class Alloc>
+// bool operator<=(const std::vector<T, Alloc> &lhs,
+//                 const std::vector<T, Alloc> &rhs);
+
+// operator>
+// template <class T, class Alloc>
+// bool operator>(const std::vector<T, Alloc> &lhs,
+//                const std::vector<T, Alloc> &rhs);
+
+// operator>=
+// template <class T, class Alloc>
+// bool operator>=(const std::vector<T, Alloc> &lhs,
+//                 const std::vector<T, Alloc> &rhs);
+
+// std::swap(std::vector)
+// template <class T, class Alloc>
+// void swap(std::vector<T, Alloc> &lhs, std::vector<T, Alloc> &rhs);
 } // namespace ft
+
 #endif // VECTOR_H

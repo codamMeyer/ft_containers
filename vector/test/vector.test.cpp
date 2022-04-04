@@ -241,17 +241,11 @@ TEST_F(VectorTest, pushBackWithCapacity)
 //                     pop_back()                            //
 ///////////////////////////////////////////////////////////////
 
-TEST_F(VectorTest, popBack)
+TEST_F(EmptyVectorTest, popBackEmptyVector)
 {
-    ftVec.push_back(100);
-    stdVec.push_back(100);
-
-    EXPECT_EQ(ftVec.back(), stdVec.back());
-    EXPECT_EQ(ftVec.size(), stdVec.size());
-    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
-
     ftVec.pop_back();
-    stdVec.pop_back();
+    EXPECT_EQ(ftVec.size(), 0);
+    EXPECT_EQ(ftVec.capacity(), 0);
 }
 
 TEST_F(VectorTest, popBackLastOneElementContainer)
@@ -268,6 +262,18 @@ TEST_F(VectorTest, popBackLastOneElementContainer)
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
 
+TEST_F(VectorTest, popBack)
+{
+    ftVec.push_back(100);
+    stdVec.push_back(100);
+
+    ftVec.pop_back();
+    stdVec.pop_back();
+
+    EXPECT_EQ(ftVec.back(), stdVec.back());
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+}
 ///////////////////////////////////////////////////////////////
 //                       resize()                            //
 ///////////////////////////////////////////////////////////////
@@ -281,6 +287,22 @@ TEST_F(VectorTest, resizeSameSize)
     EXPECT_EQ(ftVec.size(), stdVec.size());
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
     EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+}
+
+TEST_F(VectorTest, resizeSameSizeWithElements)
+{
+    ftVec.push_back(10);
+    ftVec.push_back(10);
+
+    stdVec.push_back(10);
+    stdVec.push_back(10);
+
+    ftVec.resize(4);
+    stdVec.resize(4);
+
+    EXPECT_EQ(ftVec.empty(), stdVec.empty());
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
 
 TEST_F(VectorTest, resizeWithoutValueAndBiggerThanOriginalSize)
@@ -315,12 +337,15 @@ TEST_F(VectorTest, resizeWithValueAndBiggerThanOriginalSize)
 
 TEST_F(VectorTest, resizeOndeBiggerThanCapacity)
 {
-    GTEST_SKIP_("Not passing because of capacity");
-    for(int i = 0; i < 2; ++i)
+    for(int i = 0; i < 3; ++i)
     {
         ftVec.push_back(3);
         stdVec.push_back(3);
     }
+    std::cout << "Ft capacity: " << ftVec.capacity() << "\n";
+    std::cout << "Std capacity: " << stdVec.capacity() << "\n";
+    std::cout << "Ft size: " << ftVec.size() << "\n";
+    std::cout << "Std size: " << stdVec.size() << "\n";
 
     ftVec.resize(ftVec.capacity() + 1);
     stdVec.resize(stdVec.capacity() + 1);
@@ -650,4 +675,45 @@ TEST_F(VectorTest, eraseRangeOfElementsFirstEqualLast)
               *ftVec.erase(ftVec.begin(), ftVec.begin()));
     EXPECT_EQ(stdVec.size(), ftVec.size());
     EXPECT_EQ(stdVec.capacity(), ftVec.capacity());
+}
+
+///////////////////////////////////////////////////////////////
+//                 get_allocator()                           //
+///////////////////////////////////////////////////////////////
+
+TEST_F(VectorTest, get_allocator)
+{
+    EXPECT_EQ(stdVec.get_allocator(), ftVec.get_allocator());
+}
+
+///////////////////////////////////////////////////////////////
+//                      operator ==                          //
+///////////////////////////////////////////////////////////////
+
+TEST_F(VectorTest, equal)
+{
+    ft::vector<int> rhs;
+    rhs.reserve(50);
+    rhs.insert(rhs.begin(), 5, 100);
+    ft::vector<int> lhs(5, 100);
+    ft::vector<int> diff(3, 100);
+
+    EXPECT_TRUE(lhs == rhs);
+    EXPECT_FALSE(lhs == diff);
+}
+
+///////////////////////////////////////////////////////////////
+//                      operator !=                          //
+///////////////////////////////////////////////////////////////
+
+TEST_F(VectorTest, notEqual)
+{
+    ft::vector<int> rhs;
+    rhs.reserve(50);
+    rhs.insert(rhs.begin(), 5, 100);
+    ft::vector<int> lhs(5, 100);
+    ft::vector<int> diff(3, 100);
+
+    EXPECT_FALSE(lhs != rhs);
+    EXPECT_TRUE(lhs != diff);
 }
