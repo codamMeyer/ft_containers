@@ -276,7 +276,6 @@ public:
     };
     size_type size() const
     {
-        // TODO
         return distance(begin(), end()); // std::distance(begin(), end())
     };
     size_type max_size() const
@@ -330,7 +329,23 @@ public:
     // template< class InputIt >
     // void insert( iterator pos, InputIt first, InputIt last );
 
-    // iterator erase( iterator pos );
+    iterator erase(iterator pos)
+    {
+        if(pos == (end() - 1))
+        {
+            --_end;
+            return end();
+        }
+        else
+        {
+            for(iterator it = pos; it != end() - 1; ++it)
+            {
+                *it = *(it + 1);
+            }
+            --_end;
+        }
+        return pos;
+    }
     // iterator erase( iterator first, iterator last );
     void push_back(const T& value)
     {

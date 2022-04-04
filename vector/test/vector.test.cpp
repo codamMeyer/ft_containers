@@ -1,4 +1,5 @@
 #include "../Vector.hpp"
+#include <gtest/gtest-death-test.h>
 #include <gtest/gtest.h>
 #include <gtest/internal/gtest-internal.h>
 #include <iostream>
@@ -521,7 +522,7 @@ TEST_F(VectorTest, insertEndWithoutCapacity)
     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
 
-TEST_F(VectorTest, insertCount)
+TEST_F(VectorTest, insertCountBegin)
 {
     ftVec.insert(ftVec.begin(), 6, 300);
     stdVec.insert(stdVec.begin(), 6, 300);
@@ -535,4 +536,54 @@ TEST_F(VectorTest, insertCount)
     EXPECT_EQ(ftVec.at(4), stdVec.at(4));
     EXPECT_EQ(ftVec.at(5), stdVec.at(5));
     EXPECT_EQ(ftVec.at(6), stdVec.at(6));
+}
+
+TEST_F(VectorTest, insertCountEnd)
+{
+    ftVec.insert(ftVec.end(), 6, 300);
+    stdVec.insert(stdVec.end(), 6, 300);
+
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+    EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+    EXPECT_EQ(ftVec.at(1), stdVec.at(1));
+    EXPECT_EQ(ftVec.at(2), stdVec.at(2));
+    EXPECT_EQ(ftVec.at(3), stdVec.at(3));
+    EXPECT_EQ(ftVec.at(4), stdVec.at(4));
+    EXPECT_EQ(ftVec.at(5), stdVec.at(5));
+    EXPECT_EQ(ftVec.at(6), stdVec.at(6));
+}
+
+///////////////////////////////////////////////////////////////
+//                         erase()                           //
+///////////////////////////////////////////////////////////////
+
+TEST_F(VectorTest, eraseOneElementFromEndVector)
+{
+    stdVec.push_back(100);
+    stdVec.push_back(500);
+    stdVec.push_back(700);
+
+    ftVec.push_back(100);
+    ftVec.push_back(500);
+    ftVec.push_back(700);
+
+    EXPECT_EQ(*stdVec.erase(stdVec.end() - 1), *ftVec.erase(ftVec.end() - 1));
+    EXPECT_EQ(stdVec.size(), ftVec.size());
+    EXPECT_EQ(stdVec.capacity(), ftVec.capacity());
+}
+
+TEST_F(VectorTest, eraseOneElementFromBeginVector)
+{
+    stdVec.push_back(100);
+    stdVec.push_back(500);
+    stdVec.push_back(700);
+
+    ftVec.push_back(100);
+    ftVec.push_back(500);
+    ftVec.push_back(700);
+
+    EXPECT_EQ(*stdVec.erase(stdVec.begin()), *ftVec.erase(ftVec.begin()));
+    EXPECT_EQ(stdVec.size(), ftVec.size());
+    EXPECT_EQ(stdVec.capacity(), ftVec.capacity());
 }
