@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Install gtest
-      run: sudo apt -y install googletest 
+      run: sudo apt -y install googletest && dpkg -L googletest
     - uses: actions/checkout@v2
     - name: Make Vector
       run: cd vector && make test
