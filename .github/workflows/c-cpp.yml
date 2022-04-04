@@ -16,7 +16,9 @@ jobs:
       run: sudo apt -y install googletest 
     - uses: actions/checkout@v2
     - name: Make Vector
-      run: cd vector && make test && ./vectorTest
+      run: cd vector && make test
+    - name: Run
+      run: ./vectorTest
    
 
 # && make cp *.a /usr/lib
