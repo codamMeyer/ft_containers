@@ -391,7 +391,6 @@ public:
         }
         if(count > capacity())
         {
-            // count = roundToEvenNumber(count);
             reallocate(count);
         }
         iterator oldEnd = _end;
@@ -531,26 +530,59 @@ bool operator!=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs
 }
 
 // operator<
-// template <class T, class Alloc>
-// bool operator<(const std::vector<T, Alloc> &lhs,
-//                const std::vector<T, Alloc> &rhs);
+template <class T, class Alloc>
+bool operator<(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
+{
+    if(lhs.size() < rhs.size())
+    {
+        return true;
+    }
+    typename ft::vector<T>::iterator lit = lhs.begin();
+    typename ft::vector<T>::iterator rit = rhs.begin();
+    for(; lit != lhs.end() && rit != rhs.end(); ++lit, ++rit)
+    {
+        if(*lit != *rit)
+        {
+            return (*lit - *rit);
+        }
+    }
+    return (false);
+}
 
 // operator<=
-// template <class T, class Alloc>
-// bool operator<=(const std::vector<T, Alloc> &lhs,
-//                 const std::vector<T, Alloc> &rhs);
+template <class T, class Alloc>
+bool operator<=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
+{
+    return (lhs == rhs || lhs < rhs);
+}
 
 // operator>
-// template <class T, class Alloc>
-// bool operator>(const std::vector<T, Alloc> &lhs,
-//                const std::vector<T, Alloc> &rhs);
+template <class T, class Alloc>
+bool operator>(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
+{
+    if(lhs.size() > rhs.size())
+    {
+        return true;
+    }
+    typename ft::vector<T>::iterator lit = lhs.begin();
+    typename ft::vector<T>::iterator rit = rhs.begin();
+    for(; lit != lhs.end() && rit != rhs.end(); ++lit, ++rit)
+    {
+        if(*lit != *rit)
+        {
+            return (*lit - *rit);
+        }
+    }
+    return (false);
+}
 
 // operator>=
-// template <class T, class Alloc>
-// bool operator>=(const std::vector<T, Alloc> &lhs,
-//                 const std::vector<T, Alloc> &rhs);
+template <class T, class Alloc>
+bool operator>=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
+{
+    return (lhs == rhs || lhs > rhs);
+}
 
-// std::swap(std::vector)
 // template <class T, class Alloc>
 // void swap(std::vector<T, Alloc> &lhs, std::vector<T, Alloc> &rhs);
 } // namespace ft
