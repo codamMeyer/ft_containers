@@ -18,6 +18,9 @@ jobs:
       run: cd /usr/src/googletest/googletest && sudo cmake . && sudo make
     - name: Install gtest
       run: cd /usr/src/googletest/googletest && sudo cp lib/libgtest* /usr/local/lib/ && sudo cp -r include/gtest /usr/local/include/
+    - name: Check gtest
+      run: ls /usr/local/lib/ && ls /usr/local/include/
+    
     - uses: actions/checkout@v2
     - name: Make Vector
       run: cd vector && make test
