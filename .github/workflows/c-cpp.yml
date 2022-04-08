@@ -15,7 +15,7 @@ jobs:
     - name: Install gtest
       run: sudo apt -y install googletest && dpkg -L googletest
     - name: Compile gtest
-      run: cd /usr/src/googletest/googletest && cmake . && make && cp lib/libgtest* /usr/local/lib/ && cp -r include/gtest /usr/local/include/
+      run: cd /usr/src/googletest/googletest && sudo cmake . && sudo make && sudo cp lib/libgtest* /usr/local/lib/ && sudo cp -r include/gtest /usr/local/include/
     - uses: actions/checkout@v2
     - name: Make Vector
       run: cd vector && make test
