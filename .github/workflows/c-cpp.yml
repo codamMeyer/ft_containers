@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: CMake
 
 on:
   push:
@@ -14,13 +14,10 @@ jobs:
     steps:
     - name: Install gtest
       run: sudo apt -y install googletest && dpkg -L googletest
-    - name: link include
-      run: sudo mkdir /usr/local/include/gtest && sudo ln -s /usr/src/googletest/googletest/include/gtest/gtest.h /usr/local/include/gtest/
+    - name: Compile gtest
+      run: cd /usr/src/googletest/googletest && cmake . && make && cp lib/libgtest* /usr/local/lib/ && cp -r include/gtest /usr/local/include/
     - uses: actions/checkout@v2
     - name: Make Vector
       run: cd vector && make test
     - name: Run
       run: ./vectorTest
-   
-
-# && make cp *.a /usr/lib
