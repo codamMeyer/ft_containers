@@ -7,6 +7,8 @@
 #include <memory>
 #include <stdexcept>
 
+#include "VectorIterator.hpp"
+
 namespace ft
 {
 
@@ -14,157 +16,6 @@ namespace ft
 template <class T, class Allocator = std::allocator<T>>
 class vector
 {
-    class vector_iterator
-    {
-    public:
-        vector_iterator()
-            : _value(NULL)
-        {}
-        vector_iterator(T* value)
-            : _value(value)
-        {}
-        vector_iterator(const vector_iterator& other)
-            : _value(other._value)
-        {}
-
-        vector_iterator& operator=(const vector_iterator& other)
-        {
-            _value = other._value;
-            return *this;
-        }
-
-        bool operator==(const vector_iterator& other) const
-        {
-            return _value == other._value;
-        };
-
-        bool operator!=(const vector_iterator& other) const
-        {
-            return !(*this == other);
-        };
-
-        T& operator*()
-        {
-            return *_value;
-        };
-
-        const T& operator*() const
-        {
-            return *_value;
-        };
-
-        T* operator->()
-        {
-            return _value;
-        };
-
-        const T* operator->() const
-        {
-            return _value;
-        };
-
-        vector_iterator& operator++()
-        {
-            ++_value;
-            return *this;
-        };
-
-        vector_iterator operator++(int)
-        {
-            vector_iterator old = *this;
-            ++_value;
-            return old;
-        };
-
-        vector_iterator& operator--()
-        {
-            --_value;
-            return *this;
-        };
-
-        vector_iterator operator--(int)
-        {
-            vector_iterator old = *this;
-            --_value;
-            return old;
-        };
-
-        vector_iterator operator+(int amount)
-        {
-            vector_iterator ret(*this);
-            ret._value += amount;
-            return ret;
-        };
-
-        friend vector_iterator operator+(int amount, vector_iterator other)
-        {
-            other._value += amount;
-            return other;
-        };
-
-        vector_iterator operator-(int amount)
-        {
-            vector_iterator ret(*this);
-            ret._value -= amount;
-            return ret;
-        };
-
-        friend vector_iterator operator-(int amount, vector_iterator other)
-        {
-            other._value -= amount;
-            return other;
-        };
-
-        size_t operator-(vector_iterator other) const
-        {
-            return (this->_value - other._value);
-        };
-
-        bool operator<(const vector_iterator& other) const
-        {
-            return this->_value < other._value;
-        };
-
-        bool operator<=(const vector_iterator& other) const
-        {
-            return this->_value <= other._value;
-        };
-
-        bool operator>(const vector_iterator& other) const
-        {
-            return this->_value > other._value;
-        };
-
-        bool operator>=(const vector_iterator& other) const
-        {
-            return this->_value >= other._value;
-        };
-
-        vector_iterator& operator+=(int amount)
-        {
-            _value += amount;
-            return *this;
-        };
-
-        vector_iterator& operator-=(int amount)
-        {
-            _value -= amount;
-            return *this;
-        };
-
-        T& operator[](int n)
-        {
-            return *(_value + n);
-        };
-
-        const T& operator[](int n) const
-        {
-            return *(_value + n);
-        };
-
-    private:
-        T* _value;
-    };
 
 public:
     // MEMBER TYPES
@@ -176,10 +27,10 @@ public:
     typedef const value_type& const_reference;
     typedef typename Allocator::pointer pointer;
     typedef typename Allocator::const_pointer const_pointer;
-    typedef vector_iterator iterator;
-    typedef const vector_iterator const_iterator;
-    // reverse_iterator
-    // const_reverse_iterator
+    typedef vector_iterator<T> iterator;
+    typedef const vector_iterator<T> const_iterator;
+    typedef vector_reverse_iterator<T> reverse_iterator;
+    typedef const vector_reverse_iterator<T> const_reverse_iterator;
 
     vector()
         : _capacity(0)
@@ -197,9 +48,10 @@ public:
         _allocator.construct(_elements, value);
         _begin = _elements;
         _end = &_elements[count];
+
         for(size_t i = 0; i < size(); ++i)
         {
-            _elements[i] = value;
+            _allocator.construct(&_elements[i], value);
         }
     };
 
@@ -207,6 +59,7 @@ public:
     {
         if(capacity() > 0)
         {
+            clear();
             _allocator.deallocate(_elements, capacity());
         }
     }
@@ -274,18 +127,22 @@ public:
     {
         return begin() == end();
     };
+
     size_type size() const
     {
         return distance(begin(), end()); // std::distance(begin(), end())
     };
+
     size_type max_size() const
     {
         return std::numeric_limits<difference_type>::max() / sizeof(value_type);
     };
+
     size_type capacity() const
     {
         return _capacity;
     };
+
     void reserve(size_type new_cap)
     {
         if(new_cap > max_size())
@@ -306,21 +163,22 @@ public:
     {
         if(size() + 1 > capacity())
         {
-            difference_type diff = pos - begin();
+            difference_type offset = pos - begin();
             reallocate(size() + 1);
-            pos = begin() + diff;
+            pos = begin() + offset;
         }
         for(iterator it = end(); it != pos; --it)
         {
-            *it = *(it - 1);
+            _allocator.construct(&(*it), *(it - 1));
         }
         ++_end;
-        *pos = value;
+        _allocator.construct(&(*pos), value);
         return pos;
     }
 
     void insert(iterator pos, size_type count, const T& value)
     {
+        //TODO improve because Vini isn't happy
         for(size_type i = 0; i < count; ++i)
         {
             pos = insert(pos, value);
@@ -343,11 +201,12 @@ public:
     iterator erase(iterator first, iterator last)
     {
         difference_type diff = distance(first, last);
-        if(diff)
+        if(diff > 0)
         {
             for(iterator it = last; it != end(); ++it)
             {
-                *first = *it;
+                _allocator.destroy(&(*first));
+                _allocator.construct(&(*first), *it);
                 ++first;
             }
         }
@@ -366,8 +225,8 @@ public:
         {
             reallocate(getNewCapacity());
         }
+        _allocator.construct(&(*_end), value);
         ++_end;
-        *(_end - 1) = value;
     };
 
     void pop_back()
@@ -397,7 +256,7 @@ public:
         _end = _begin + count;
         for(iterator it = oldEnd; it != end(); ++it)
         {
-            *it = value;
+            _allocator.construct(&(*it), value);
         }
     }
 
@@ -437,10 +296,24 @@ public:
         return _end;
     };
 
-    // iterator rend();
-    // iterator rbegin();
-    // const_iterator rbegin() const;
-    // const_iterator rend() const;
+    reverse_iterator rbegin()
+    {
+        return reverse_iterator(_elements + size() - 1);
+    }
+
+    reverse_iterator rbegin() const
+    {
+        return reverse_iterator(_elements + size() - 1);
+    }
+
+    reverse_iterator rend()
+    {
+        return reverse_iterator(_elements - 1); // TODO
+    }
+    const_reverse_iterator rend() const
+    {
+        return reverse_iterator(_elements - 1); // TODO
+    }
 
     // OPERATORS OVERLOAD
     // vector& operator=(const vector& other);
@@ -489,7 +362,9 @@ private:
         }
         for(size_type i = 0; i < oldSize; ++i)
         {
-            _elements[i] = oldElements[i];
+            _allocator.construct(&_elements[i], oldElements[i]);
+            std::cout << "Inside reallocate " << i << std::endl;
+            _allocator.destroy(&oldElements[i]);
         }
         _end += oldSize;
         _allocator.deallocate(oldElements, oldCapacity);

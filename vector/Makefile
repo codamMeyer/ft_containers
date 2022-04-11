@@ -2,11 +2,14 @@ CC=clang++
 CFLAGS= -Wall -Werror -Wextra -std=c++98
 
 TEST_FLAGS= -Wall -Werror -Wextra -fsanitize=address -fsanitize=leak -Wl,-rpath=/usr/local/lib -lgtest -lgtest_main -lpthread -ggdb
+GDB_TEST_FLAGS= -Wall -Werror -Wextra -Wl,-rpath=/usr/local/lib -lgtest -lgtest_main -lpthread -ggdb3 -O0
 TEST_CRITERION_FLAG= -lcriterion -L /usr/local/lib -I /usr/local/include -std=c++11 -Wl,-rpath=/usr/local/lib
 
 NAME=vector
 
-HEADER_FILES=Vector.hpp
+HEADER_FILES=			\
+	Vector.hpp			\
+	VectorIterator.hpp 	\
 
 TEST=$(NAME)Test
 
@@ -18,6 +21,9 @@ all: test
 
 test: $(HEADER_FILES) $(TEST_FILES)
 	@g++ $(TEST_FLAGS) $(SRC_FILES) $(TEST_FILES) -o $(TEST)
+
+debug: $(HEADER_FILES) $(TEST_FILES)
+	@g++ $(GDB_TEST_FLAGS) $(SRC_FILES) $(TEST_FILES) -o $(TEST)
 
 run: all
 	./$(TEST)

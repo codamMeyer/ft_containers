@@ -677,6 +677,14 @@ TEST_F(VectorTest, eraseRangeOfElementsFirstEqualLast)
     EXPECT_EQ(stdVec.capacity(), ftVec.capacity());
 }
 
+TEST_F(EmptyVectorTest, eraseRangeFromEmptyVector)
+{
+    stdVec.erase(stdVec.begin(), stdVec.end());
+    ftVec.erase(ftVec.begin(), ftVec.end());
+    EXPECT_EQ(stdVec.size(), ftVec.size());
+    EXPECT_EQ(stdVec.capacity(), ftVec.capacity());
+}
+
 ///////////////////////////////////////////////////////////////
 //                 get_allocator()                           //
 ///////////////////////////////////////////////////////////////
@@ -886,4 +894,99 @@ TEST_F(VectorTest, biggerOrEqualThanOperatorWithSameSizes)
 
     lhs.push_back(50);
     EXPECT_TRUE(lhs >= rhs);
+}
+
+///////////////////////////////////////////////////////////////
+//                  Object Destruction                       //
+///////////////////////////////////////////////////////////////
+
+class ObjectDestruction : public ::testing::Test
+{
+public:
+    class MyObject
+    {
+    public:
+        MyObject(int* count)
+            : destructionCount(count)
+        {}
+
+        MyObject(const MyObject& other)
+            : destructionCount(other.destructionCount)
+        {}
+
+        ~MyObject()
+        {
+            (*destructionCount)++;
+        }
+
+        MyObject& operator=(const MyObject& other)
+        {
+            this->destructionCount = other.destructionCount;
+            return *this;
+        }
+        int* destructionCount;
+    };
+
+    ObjectDestruction()
+        : counter(0){};
+
+    typedef ft::vector<MyObject>::difference_type difference_type;
+
+    int counter;
+};
+
+TEST_F(ObjectDestruction, clearCheckObjectDestruction)
+{
+    MyObject a(&counter);
+    std::vector<MyObject> objs(3, a);
+    EXPECT_EQ(counter, 0);
+    objs.clear();
+
+    EXPECT_EQ(counter, 3);
+}
+
+TEST_F(ObjectDestruction, popBackCheckObjectDestruction)
+{
+    MyObject a(&counter);
+    std::vector<MyObject> objs(3, a);
+    EXPECT_EQ(counter, 0);
+
+    objs.pop_back();
+
+    EXPECT_EQ(counter, 1);
+}
+
+TEST_F(ObjectDestruction, destructorCheckObjectDestruction)
+{
+    MyObject a(&counter);
+    {
+        std::vector<MyObject> objs(1, a);
+        EXPECT_EQ(counter, 0);
+    }
+
+    EXPECT_EQ(counter, 1);
+}
+
+TEST_F(ObjectDestruction, resizeCheckObjectDestruction)
+{
+    MyObject a(&counter);
+    {
+        ft::vector<MyObject> objs(2, a);
+
+        EXPECT_EQ(objs.size(), 2);
+        objs.resize(4, a);
+    }
+    EXPECT_EQ(counter, 7); // +1 because of param
+}
+
+TEST_F(ObjectDestruction, reserveCheckObjectDestruction)
+{
+    MyObject a(&counter);
+    {
+        ft::vector<MyObject> objs(2, a);
+
+        EXPECT_EQ(objs.size(), 2);
+        objs.reserve(10);
+    }
+    EXPECT_EQ(counter, 4);
 }
