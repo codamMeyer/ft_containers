@@ -13,13 +13,20 @@ public:
 
     EmptyVectorTest()
         : ftConstVec(ftVec)
-        , stdConstVec(stdVec){};
+        , stdConstVec(stdVec)
+    {
+        sampleVec.push_back(1);
+        sampleVec.push_back(2);
+        sampleVec.push_back(3);
+        sampleVec.push_back(4);
+    };
 
     ft::vector<int> ftVec;
     const ft::vector<int>& ftConstVec;
 
     std::vector<int> stdVec;
     const std::vector<int>& stdConstVec;
+    std::vector<int> sampleVec;
 };
 
 ///////////////////////////////////////////////////////////////
@@ -95,13 +102,21 @@ public:
         : ftVec(1, 5)
         , ftConstVec(ftVec)
         , stdVec(1, 5)
-        , stdConstVec(stdVec){};
+        , stdConstVec(stdVec)
+    {
+        sampleVec.push_back(1);
+        sampleVec.push_back(2);
+        sampleVec.push_back(3);
+        sampleVec.push_back(4);
+    };
 
     ft::vector<int> ftVec;
     const ft::vector<int>& ftConstVec;
 
     std::vector<int> stdVec;
     const std::vector<int>& stdConstVec;
+
+    std::vector<int> sampleVec;
 };
 
 ///////////////////////////////////////////////////////////////
@@ -597,6 +612,19 @@ TEST_F(VectorTest, insertCountMiddle)
     EXPECT_EQ(ftVec.at(6), stdVec.at(6));
 }
 
+// TEST_F(EmptyVectorTest, templatedInsertEmptyVector)
+// {
+//     ftVec.insert(ftVec.begin(), sampleVec.begin(), sampleVec.end());
+//     stdVec.insert(stdVec.cbegin(), sampleVec.begin(), sampleVec.end());
+
+//     EXPECT_EQ(ftVec.size(), stdVec.size());
+//     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+//     EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+//     EXPECT_EQ(ftVec.at(1), stdVec.at(1));
+//     EXPECT_EQ(ftVec.at(2), stdVec.at(2));
+//     EXPECT_EQ(ftVec.at(3), stdVec.at(3));
+// }
+
 ///////////////////////////////////////////////////////////////
 //                         erase()                           //
 ///////////////////////////////////////////////////////////////
@@ -761,7 +789,7 @@ TEST_F(VectorTest, assignmentOperatorOverwritingNonEmptyVector)
 //                      assign()                             //
 ///////////////////////////////////////////////////////////////
 
-TEST_F(EmptyVectorTest, DISABLED_assignToEmpty)
+TEST_F(EmptyVectorTest, assignToEmpty)
 {
     std::vector<int> newVec;
     ftVec.assign(5, 1);

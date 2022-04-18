@@ -8,6 +8,8 @@
 #include <stdexcept>
 
 #include "VectorIterator.hpp"
+#include <utility>
+#include <utils/utility.hpp>
 
 namespace ft
 {
@@ -38,6 +40,13 @@ public:
         , _begin(NULL)
         , _end(NULL){};
 
+    explicit vector(const Allocator& alloc)
+        : _allocator(alloc)
+        , _capacity(0)
+        , _elements(NULL)
+        , _begin(NULL)
+        , _end(NULL){};
+
     explicit vector(size_type count, const T& value = T(), const Allocator& alloc = Allocator())
         : _allocator(alloc)
         , _capacity(count)
@@ -55,16 +64,13 @@ public:
         }
     };
 
-    // explicit vector( size_type count, const T& value = T(), const Allocator& alloc = Allocator());
-
     // template <class InputIt>
     // vector(InputIt first, InputIt last, const Allocator& alloc = Allocator());
 
-    // vector( const vector& other );
+    // vector(const vector& other) {}
 
     ~vector()
     {
-
         if(capacity() > 0)
         {
             clear();
@@ -114,6 +120,11 @@ public:
     // template< class InputIt >
     // void assign( InputIt first, InputIt last );
 
+    allocator_type get_allocator() const
+    {
+        return _allocator;
+    }
+
     // ELEMENT ACCESS
     reference at(size_type pos)
     {
@@ -145,12 +156,12 @@ public:
 
     reference front()
     {
-        return _elements[0];
+        return *_begin;
     };
 
     const_reference front() const
     {
-        return _elements[0];
+        return *_begin;
     };
 
     reference back()
@@ -172,6 +183,43 @@ public:
         return _elements;
     };
 
+    // ITERATOR
+    iterator begin()
+    {
+        return _begin;
+    };
+    iterator end()
+    {
+        return _end;
+    };
+    const_iterator begin() const
+    {
+        return _begin;
+    };
+    const_iterator end() const
+    {
+        return _end;
+    };
+
+    reverse_iterator rbegin()
+    {
+        return reverse_iterator(_elements + size() - 1);
+    }
+
+    reverse_iterator rbegin() const
+    {
+        return reverse_iterator(_elements + size() - 1);
+    }
+
+    reverse_iterator rend()
+    {
+        return reverse_iterator(_elements - 1);
+    }
+    const_reverse_iterator rend() const
+    {
+        return reverse_iterator(_elements - 1);
+    }
+
     // CAPACITY
     bool empty() const
     {
@@ -188,11 +236,6 @@ public:
         return std::numeric_limits<difference_type>::max() / sizeof(value_type);
     };
 
-    size_type capacity() const
-    {
-        return _capacity;
-    };
-
     void reserve(size_type new_cap)
     {
         if(new_cap > max_size())
@@ -201,6 +244,11 @@ public:
         }
         reallocate(new_cap);
     }
+
+    size_type capacity() const
+    {
+        return _capacity;
+    };
 
     // MODIFIERS
     void clear()
@@ -243,7 +291,21 @@ public:
 
     // template <class InputIt>
     // void insert(iterator pos, InputIt first, InputIt last)
-    // {}
+    // {
+    //     const size_type count = last - first; // TODO replace std::distance with ft::distance
+
+    //     if(size() + count > capacity())
+    //     {
+    //         difference_type offset = pos - begin();
+    //         reallocate(size() + count);
+    //         pos = begin() + offset;
+    //     }
+    //     _end += count;
+    //     for(; first != last; ++first, ++pos)
+    //     {
+    //         _allocator.construct(&(*pos), *first);
+    //     }
+    // }
 
     iterator erase(iterator pos)
     {
@@ -319,62 +381,10 @@ public:
 
     void swap(vector& other)
     {
-        pointer elements_tmp = this->_elements;
-        this->_elements = other._elements;
-        other._elements = elements_tmp;
-
-        iterator it_tmp = this->_end;
-        this->_end = other._end;
-        other._end = it_tmp;
-
-        this->_begin = &this->_elements[0];
-        other._begin = &other._elements[0];
-
-        size_type capacity_tmp = this->_capacity;
-        this->_capacity = other._capacity;
-        other._capacity = capacity_tmp;
-    }
-
-    // ITERATOR
-    iterator begin()
-    {
-        return _begin;
-    };
-    iterator end()
-    {
-        return _end;
-    };
-    const_iterator begin() const
-    {
-        return _begin;
-    };
-    const_iterator end() const
-    {
-        return _end;
-    };
-
-    reverse_iterator rbegin()
-    {
-        return reverse_iterator(_elements + size() - 1);
-    }
-
-    reverse_iterator rbegin() const
-    {
-        return reverse_iterator(_elements + size() - 1);
-    }
-
-    reverse_iterator rend()
-    {
-        return reverse_iterator(_elements - 1);
-    }
-    const_reverse_iterator rend() const
-    {
-        return reverse_iterator(_elements - 1);
-    }
-
-    allocator_type get_allocator() const
-    {
-        return _allocator;
+        ft::swap(this->_elements, other._elements);
+        ft::swap(this->_end, other._end);
+        ft::swap(this->_begin, other._begin);
+        ft::swap(this->_capacity, other._capacity);
     }
 
 private:
@@ -428,6 +438,7 @@ private:
     iterator _begin;
     iterator _end;
 };
+
 // NON-MEMBER FUNCTIONS
 // operator==
 template <class T, class Alloc>
@@ -511,7 +522,9 @@ bool operator>=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs
 }
 
 // template <class T, class Alloc>
+
 // void swap(std::vector<T, Alloc> &lhs, std::vector<T, Alloc> &rhs);
+
 } // namespace ft
 
 #endif // VECTOR_H

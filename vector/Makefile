@@ -1,8 +1,10 @@
 CC=clang++
-CFLAGS= -Wall -Werror -Wextra -std=c++98
+FLAGS=-Wall -Werror -Wextra -I../
 
-TEST_FLAGS= -Wall -Werror -Wextra -fsanitize=address -fsanitize=leak -Wl,-rpath=/usr/local/lib -L/home/mmeyer -lgtest -lgtest_main -lpthread -ggdb
-GDB_TEST_FLAGS= -Wall -Werror -Wextra -Wl,-rpath=/usr/local/lib -lgtest -lgtest_main -lpthread -ggdb3 -O0
+CFLAGS= $(FLAGS) -std=c++98
+
+TEST_FLAGS= $(FLAGS) -fsanitize=address -fsanitize=leak -Wl,-rpath=/usr/local/lib -L/home/mmeyer -lgtest -lgtest_main -lpthread -ggdb
+GDB_TEST_FLAGS= $(FLAGS) -Wl,-rpath=/usr/local/lib -lgtest -lgtest_main -lpthread -ggdb3 -O0
 
 NAME=vector
 
