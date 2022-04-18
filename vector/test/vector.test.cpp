@@ -342,11 +342,6 @@ TEST_F(VectorTest, DISABLED_resizeOneBiggerThanCapacity)
         ftVec.push_back(3);
         stdVec.push_back(3);
     }
-    std::cout << "Ft capacity: " << ftVec.capacity() << "\n";
-    std::cout << "Std capacity: " << stdVec.capacity() << "\n";
-    std::cout << "Ft size: " << ftVec.size() << "\n";
-    std::cout << "Std size: " << stdVec.size() << "\n";
-
     ftVec.resize(ftVec.capacity() + 1);
     stdVec.resize(stdVec.capacity() + 1);
 
@@ -579,6 +574,29 @@ TEST_F(VectorTest, insertCountEnd)
     EXPECT_EQ(ftVec.at(6), stdVec.at(6));
 }
 
+TEST_F(VectorTest, insertCountMiddle)
+{
+    ftVec.push_back(4);
+    ftVec.push_back(3);
+    ftVec.push_back(2);
+    ftVec.insert(ftVec.begin() + 1, 3, 0);
+
+    stdVec.push_back(4);
+    stdVec.push_back(3);
+    stdVec.push_back(2);
+    stdVec.insert(stdVec.begin() + 1, 3, 0);
+
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    // EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+    EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+    EXPECT_EQ(ftVec.at(1), stdVec.at(1));
+    EXPECT_EQ(ftVec.at(2), stdVec.at(2));
+    EXPECT_EQ(ftVec.at(3), stdVec.at(3));
+    EXPECT_EQ(ftVec.at(4), stdVec.at(4));
+    EXPECT_EQ(ftVec.at(5), stdVec.at(5));
+    EXPECT_EQ(ftVec.at(6), stdVec.at(6));
+}
+
 ///////////////////////////////////////////////////////////////
 //                         erase()                           //
 ///////////////////////////////////////////////////////////////
@@ -692,6 +710,86 @@ TEST_F(EmptyVectorTest, eraseRangeFromEmptyVector)
 TEST_F(VectorTest, get_allocator)
 {
     EXPECT_EQ(stdVec.get_allocator(), ftVec.get_allocator());
+}
+
+///////////////////////////////////////////////////////////////
+//                      operator =                           //
+///////////////////////////////////////////////////////////////
+
+TEST_F(EmptyVectorTest, assignmentOperatorVector)
+{
+    ft::vector<int> vec;
+    ftVec = vec;
+    EXPECT_TRUE(vec == ftVec);
+    EXPECT_EQ(vec.get_allocator(), ftVec.get_allocator());
+    EXPECT_EQ(vec.capacity(), ftVec.capacity());
+    EXPECT_EQ(vec.size(), ftVec.size());
+}
+
+TEST_F(EmptyVectorTest, assignmentOperatorVectorInverted)
+{
+    ft::vector<int> vec;
+    vec = ftVec;
+    EXPECT_EQ(vec.get_allocator(), ftVec.get_allocator());
+    EXPECT_EQ(vec.capacity(), ftVec.capacity());
+    EXPECT_EQ(vec.size(), ftVec.size());
+}
+
+TEST_F(VectorTest, assignmentOperatorNonEmptyVector)
+{
+    ft::vector<int> vec;
+
+    vec = ftVec;
+    EXPECT_TRUE(vec == ftVec);
+    EXPECT_EQ(ftVec.size(), vec.size());
+    EXPECT_EQ(ftVec.capacity(), vec.capacity());
+    EXPECT_EQ(ftVec.get_allocator(), vec.get_allocator());
+}
+
+TEST_F(VectorTest, assignmentOperatorOverwritingNonEmptyVector)
+{
+    ft::vector<int> vec;
+
+    ftVec = vec;
+    EXPECT_TRUE(vec == ftVec);
+    EXPECT_EQ(ftVec.size(), vec.size());
+    EXPECT_EQ(ftVec.capacity(), vec.capacity());
+    EXPECT_EQ(ftVec.get_allocator(), vec.get_allocator());
+}
+
+///////////////////////////////////////////////////////////////
+//                      assign()                             //
+///////////////////////////////////////////////////////////////
+
+TEST_F(EmptyVectorTest, DISABLED_assignToEmpty)
+{
+    std::vector<int> newVec;
+    ftVec.assign(5, 1);
+    newVec.assign(5, 1);
+
+    EXPECT_EQ(ftVec.capacity(), newVec.capacity());
+    EXPECT_EQ(ftVec.size(), newVec.size());
+}
+
+TEST_F(VectorTest, assignToNonEmptyLessThanExistent)
+{
+    ftVec.insert(ftVec.begin(), 10, 100);
+    ftVec.assign(5, 1);
+
+    stdVec.insert(stdVec.begin(), 10, 100);
+    stdVec.assign(5, 1);
+
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+}
+
+TEST_F(VectorTest, assignToNonEmptyMoreThanExistent)
+{
+    ftVec.assign(5, 100);
+    stdVec.assign(5, 100);
+
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
 }
 
 ///////////////////////////////////////////////////////////////

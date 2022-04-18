@@ -479,19 +479,3 @@ TEST_F(ReverseVectorIteratorTest, offsetOperator)
     EXPECT_EQ(ftVec.rbegin()[1], 11);
     EXPECT_EQ(const_value, 11);
 }
-
-TEST(string, test)
-{
-    ft::vector<std::string> myVec;
-
-    myVec.push_back("hello");
-    myVec.push_back("World");
-    myVec.push_back("!");
-
-    std::string* ptr = &myVec[0];
-
-    std::cout << ptr++ << std::endl;
-    std::cout << ptr++ << std::endl;
-    std::cout << ptr << std::endl;
-    std::cout << sizeof(std::string) << std::endl;
-}

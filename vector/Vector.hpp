@@ -55,14 +55,64 @@ public:
         }
     };
 
+    // explicit vector( size_type count, const T& value = T(), const Allocator& alloc = Allocator());
+
+    // template <class InputIt>
+    // vector(InputIt first, InputIt last, const Allocator& alloc = Allocator());
+
+    // vector( const vector& other );
+
     ~vector()
     {
+
         if(capacity() > 0)
         {
             clear();
             _allocator.deallocate(_elements, capacity());
         }
     }
+
+    // OPERATORS OVERLOAD
+    vector& operator=(const vector& other)
+    {
+        if(this->capacity() || other.empty())
+        {
+            this->clear();
+            this->_allocator.deallocate(this->_elements, capacity());
+            this->_capacity = other.capacity();
+            if(other.empty())
+            {
+                return *this;
+            }
+        }
+        this->_allocator = other._allocator;
+        this->_capacity = other.capacity();
+        this->_elements = _allocator.allocate(this->capacity());
+        this->_begin = this->_elements;
+        this->_end = &this->_elements[other.size()];
+        for(size_t i = 0; i < size(); ++i)
+        {
+            this->_allocator.construct(&this->_elements[i], other._elements[i]);
+        }
+        return *this;
+    }
+
+    void assign(size_type count, const T& value)
+    {
+        clear();
+        if(count > capacity())
+        {
+            reallocate(count);
+        }
+        for(size_type i = 0; i < count; ++i)
+        {
+            _allocator.construct(&_elements[i], value);
+        }
+        _end = _begin + count;
+    }
+
+    // template< class InputIt >
+    // void assign( InputIt first, InputIt last );
 
     // ELEMENT ACCESS
     reference at(size_type pos)
@@ -161,32 +211,39 @@ public:
 
     iterator insert(iterator pos, const T& value)
     {
-        if(size() + 1 > capacity())
-        {
-            difference_type offset = pos - begin();
-            reallocate(size() + 1);
-            pos = begin() + offset;
-        }
-        for(iterator it = end(); it != pos; --it)
-        {
-            _allocator.construct(&(*it), *(it - 1));
-        }
-        ++_end;
-        _allocator.construct(&(*pos), value);
+        difference_type offset = pos - begin();
+        insert(pos, 1, value);
+        pos = begin() + offset;
         return pos;
     }
 
     void insert(iterator pos, size_type count, const T& value)
     {
-        //TODO improve because Vini isn't happy
-        for(size_type i = 0; i < count; ++i)
+        if(size() + count > capacity())
         {
-            pos = insert(pos, value);
+            difference_type offset = pos - begin();
+            reallocate(size() + count);
+            pos = begin() + offset;
+        }
+
+        iterator i = end() - 1;
+        iterator j = i + count;
+        _end += count;
+
+        for(; i >= pos; --i, --j)
+        {
+            _allocator.construct(&(*j), *i);
+            _allocator.destroy(&(*j));
+        }
+        for(iterator it = pos; it < (pos + count); ++it)
+        {
+            _allocator.construct(&(*it), value);
         }
     }
 
-    // template< class InputIt >
-    // void insert( iterator pos, InputIt first, InputIt last );
+    // template <class InputIt>
+    // void insert(iterator pos, InputIt first, InputIt last)
+    // {}
 
     iterator erase(iterator pos)
     {
@@ -308,16 +365,12 @@ public:
 
     reverse_iterator rend()
     {
-        return reverse_iterator(_elements - 1); // TODO
+        return reverse_iterator(_elements - 1);
     }
     const_reverse_iterator rend() const
     {
-        return reverse_iterator(_elements - 1); // TODO
+        return reverse_iterator(_elements - 1);
     }
-
-    // OPERATORS OVERLOAD
-    // vector& operator=(const vector& other);
-    // void assign(size_type count, const T &value);
 
     allocator_type get_allocator() const
     {
@@ -363,7 +416,6 @@ private:
         for(size_type i = 0; i < oldSize; ++i)
         {
             _allocator.construct(&_elements[i], oldElements[i]);
-            std::cout << "Inside reallocate " << i << std::endl;
             _allocator.destroy(&oldElements[i]);
         }
         _end += oldSize;
