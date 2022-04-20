@@ -2,11 +2,13 @@
 #define __VECTORITERATOR_H__
 
 #include <cstdlib>
+#include <iterator/IteratorTraits.hpp>
+#include <iterator>
 
 namespace ft
 {
 template <typename T>
-class vector_iterator
+class vector_iterator : public ft::iterator<std::random_access_iterator_tag, T>
 {
 public:
     vector_iterator()
@@ -159,7 +161,7 @@ private:
 };
 
 template <typename T>
-class vector_reverse_iterator
+class vector_reverse_iterator : public ft::iterator<std::random_access_iterator_tag, T>
 {
 public:
     vector_reverse_iterator()

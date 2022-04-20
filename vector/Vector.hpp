@@ -8,7 +8,6 @@
 #include <stdexcept>
 
 #include "VectorIterator.hpp"
-#include <utility>
 #include <utils/utility.hpp>
 
 namespace ft
@@ -67,7 +66,24 @@ public:
     // template <class InputIt>
     // vector(InputIt first, InputIt last, const Allocator& alloc = Allocator());
 
-    // vector(const vector& other) {}
+    vector(const vector& other)
+        : _allocator(other._allocator)
+        , _capacity(other._capacity)
+    {
+        _begin = NULL;
+        _end = NULL;
+        _elements = NULL;
+        if(!other.empty())
+        {
+            _elements = _allocator.allocate(other._capacity);
+            _begin = &_elements[0];
+            for(size_type i = 0; i < other.size(); ++i)
+            {
+                _elements[i] = other._elements[i];
+            }
+            _end = &_elements[other.size()];
+        }
+    }
 
     ~vector()
     {
@@ -521,10 +537,13 @@ bool operator>=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs
     return (lhs == rhs || lhs > rhs);
 }
 
-// template <class T, class Alloc>
-
-// void swap(std::vector<T, Alloc> &lhs, std::vector<T, Alloc> &rhs);
-
+template <class T, class Alloc>
+void swap(vector<T, Alloc>& lhs, vector<T, Alloc>& rhs)
+{
+    vector<T, Alloc> tmp(lhs);
+    lhs = rhs;
+    rhs = tmp;
+}
 } // namespace ft
 
 #endif // VECTOR_H

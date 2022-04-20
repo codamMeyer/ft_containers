@@ -1,10 +1,14 @@
 #include "../Vector.hpp"
+#include <array>
 #include <gtest/gtest-death-test.h>
 #include <gtest/gtest.h>
 #include <gtest/internal/gtest-internal.h>
 #include <iostream>
 #include <iterator>
+#include <memory>
 #include <vector>
+
+#include <algorithm>
 
 class EmptyVectorTest : public ::testing::Test
 {
@@ -741,6 +745,33 @@ TEST_F(VectorTest, get_allocator)
 }
 
 ///////////////////////////////////////////////////////////////
+//                      copy constructor                     //
+///////////////////////////////////////////////////////////////
+
+TEST_F(EmptyVectorTest, copyEmpty)
+{
+    ft::vector<int> vec(ftVec);
+
+    EXPECT_TRUE(vec == ftVec);
+    EXPECT_EQ(vec.get_allocator(), ftVec.get_allocator());
+    EXPECT_EQ(vec.capacity(), ftVec.capacity());
+    EXPECT_EQ(vec.size(), ftVec.size());
+}
+
+TEST_F(VectorTest, copyNonEmpty)
+{
+    ftVec.push_back(5);
+    ftVec.push_back(5);
+    ftVec.push_back(5);
+    ft::vector<int> vec(ftVec);
+
+    EXPECT_TRUE(vec == ftVec);
+    EXPECT_EQ(vec.get_allocator(), ftVec.get_allocator());
+    EXPECT_EQ(vec.capacity(), ftVec.capacity());
+    EXPECT_EQ(vec.size(), ftVec.size());
+}
+
+///////////////////////////////////////////////////////////////
 //                      operator =                           //
 ///////////////////////////////////////////////////////////////
 
@@ -757,6 +788,8 @@ TEST_F(EmptyVectorTest, assignmentOperatorVector)
 TEST_F(EmptyVectorTest, assignmentOperatorVectorInverted)
 {
     ft::vector<int> vec;
+    vec.push_back(100);
+    vec.push_back(100);
     vec = ftVec;
     EXPECT_EQ(vec.get_allocator(), ftVec.get_allocator());
     EXPECT_EQ(vec.capacity(), ftVec.capacity());
@@ -767,7 +800,7 @@ TEST_F(VectorTest, assignmentOperatorNonEmptyVector)
 {
     ft::vector<int> vec;
 
-    vec = ftVec;
+    ftVec = vec;
     EXPECT_TRUE(vec == ftVec);
     EXPECT_EQ(ftVec.size(), vec.size());
     EXPECT_EQ(ftVec.capacity(), vec.capacity());
@@ -1026,7 +1059,7 @@ TEST_F(VectorTest, biggerOrEqualThanOperatorWithSameSizes)
 //                  Object Destruction                       //
 ///////////////////////////////////////////////////////////////
 
-class ObjectDestruction : public ::testing::Test
+class ObjectDestructionTest : public ::testing::Test
 {
 public:
     class MyObject
@@ -1053,7 +1086,7 @@ public:
         int* destructionCount;
     };
 
-    ObjectDestruction()
+    ObjectDestructionTest()
         : counter(0){};
 
     typedef ft::vector<MyObject>::difference_type difference_type;
@@ -1061,7 +1094,7 @@ public:
     int counter;
 };
 
-TEST_F(ObjectDestruction, clearCheckObjectDestruction)
+TEST_F(ObjectDestructionTest, clearCheckObjectDestruction)
 {
     MyObject a(&counter);
     std::vector<MyObject> objs(3, a);
@@ -1071,7 +1104,7 @@ TEST_F(ObjectDestruction, clearCheckObjectDestruction)
     EXPECT_EQ(counter, 3);
 }
 
-TEST_F(ObjectDestruction, popBackCheckObjectDestruction)
+TEST_F(ObjectDestructionTest, popBackCheckObjectDestruction)
 {
     MyObject a(&counter);
     std::vector<MyObject> objs(3, a);
@@ -1082,7 +1115,7 @@ TEST_F(ObjectDestruction, popBackCheckObjectDestruction)
     EXPECT_EQ(counter, 1);
 }
 
-TEST_F(ObjectDestruction, destructorCheckObjectDestruction)
+TEST_F(ObjectDestructionTest, destructorCheckObjectDestruction)
 {
     MyObject a(&counter);
     {
@@ -1093,7 +1126,7 @@ TEST_F(ObjectDestruction, destructorCheckObjectDestruction)
     EXPECT_EQ(counter, 1);
 }
 
-TEST_F(ObjectDestruction, resizeCheckObjectDestruction)
+TEST_F(ObjectDestructionTest, resizeCheckObjectDestruction)
 {
     MyObject a(&counter);
     {
@@ -1105,7 +1138,7 @@ TEST_F(ObjectDestruction, resizeCheckObjectDestruction)
     EXPECT_EQ(counter, 7); // +1 because of param
 }
 
-TEST_F(ObjectDestruction, reserveCheckObjectDestruction)
+TEST_F(ObjectDestructionTest, reserveCheckObjectDestruction)
 {
     MyObject a(&counter);
     {
@@ -1115,4 +1148,26 @@ TEST_F(ObjectDestruction, reserveCheckObjectDestruction)
         objs.reserve(10);
     }
     EXPECT_EQ(counter, 4);
+}
+
+///////////////////////////////////////////////////////////////
+//                          Algorithms                       //
+///////////////////////////////////////////////////////////////
+
+TEST(STLAlgorithmTest, sort)
+{
+    std::array<int, 3> arr = {2, 1, 3};
+
+    std::vector<int> stdVec(arr.begin(), arr.end());
+    ft::vector<int> ftVec;
+    ftVec.push_back(2);
+    ftVec.push_back(1);
+    ftVec.push_back(3);
+
+    std::sort(stdVec.begin(), stdVec.end());
+    std::sort(ftVec.begin(), ftVec.end());
+
+    EXPECT_EQ(stdVec[0], ftVec[0]);
+    EXPECT_EQ(stdVec[1], ftVec[1]);
+    EXPECT_EQ(stdVec[2], ftVec[2]);
 }

@@ -8,9 +8,9 @@ GDB_TEST_FLAGS= $(FLAGS) -Wl,-rpath=/usr/local/lib -lgtest -lgtest_main -lpthrea
 
 NAME=vector
 
-HEADER_FILES=			\
-	Vector.hpp			\
-	VectorIterator.hpp 	\
+HEADER_FILES=						\
+	Vector.hpp						\
+	VectorIterator.hpp 				\
 
 TEST=$(NAME)Test
 
