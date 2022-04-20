@@ -1,6 +1,7 @@
 #ifndef __ITERATORTRAITS_H__
 #define __ITERATORTRAITS_H__
 #include <cstddef>
+#include <iterator>
 
 namespace ft
 {

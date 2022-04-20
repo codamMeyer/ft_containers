@@ -1,14 +1,14 @@
 #include "../Vector.hpp"
+#include <algorithm>
 #include <array>
 #include <gtest/gtest-death-test.h>
 #include <gtest/gtest.h>
 #include <gtest/internal/gtest-internal.h>
 #include <iostream>
 #include <iterator>
+#include <list>
 #include <memory>
 #include <vector>
-
-#include <algorithm>
 
 class EmptyVectorTest : public ::testing::Test
 {
@@ -23,6 +23,11 @@ public:
         sampleVec.push_back(2);
         sampleVec.push_back(3);
         sampleVec.push_back(4);
+
+        sampleList.push_back(1);
+        sampleList.push_back(2);
+        sampleList.push_back(3);
+        sampleList.push_back(4);
     };
 
     ft::vector<int> ftVec;
@@ -31,6 +36,7 @@ public:
     std::vector<int> stdVec;
     const std::vector<int>& stdConstVec;
     std::vector<int> sampleVec;
+    std::list<int> sampleList;
 };
 
 ///////////////////////////////////////////////////////////////
@@ -616,18 +622,31 @@ TEST_F(VectorTest, insertCountMiddle)
     EXPECT_EQ(ftVec.at(6), stdVec.at(6));
 }
 
-// TEST_F(EmptyVectorTest, templatedInsertEmptyVector)
-// {
-//     ftVec.insert(ftVec.begin(), sampleVec.begin(), sampleVec.end());
-//     stdVec.insert(stdVec.cbegin(), sampleVec.begin(), sampleVec.end());
+TEST_F(EmptyVectorTest, templatedInsertFromArray)
+{
+    ftVec.insert(ftVec.begin(), sampleVec.begin(), sampleVec.end());
+    stdVec.insert(stdVec.cbegin(), sampleVec.begin(), sampleVec.end());
 
-//     EXPECT_EQ(ftVec.size(), stdVec.size());
-//     EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
-//     EXPECT_EQ(ftVec.at(0), stdVec.at(0));
-//     EXPECT_EQ(ftVec.at(1), stdVec.at(1));
-//     EXPECT_EQ(ftVec.at(2), stdVec.at(2));
-//     EXPECT_EQ(ftVec.at(3), stdVec.at(3));
-// }
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+    EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+    EXPECT_EQ(ftVec.at(1), stdVec.at(1));
+    EXPECT_EQ(ftVec.at(2), stdVec.at(2));
+    EXPECT_EQ(ftVec.at(3), stdVec.at(3));
+}
+
+TEST_F(EmptyVectorTest, templatedInsertFromList)
+{
+    ftVec.insert(ftVec.begin(), sampleList.begin(), sampleList.end());
+    stdVec.insert(stdVec.cbegin(), sampleList.begin(), sampleList.end());
+
+    EXPECT_EQ(ftVec.size(), stdVec.size());
+    EXPECT_EQ(ftVec.capacity(), stdVec.capacity());
+    EXPECT_EQ(ftVec.at(0), stdVec.at(0));
+    EXPECT_EQ(ftVec.at(1), stdVec.at(1));
+    EXPECT_EQ(ftVec.at(2), stdVec.at(2));
+    EXPECT_EQ(ftVec.at(3), stdVec.at(3));
+}
 
 ///////////////////////////////////////////////////////////////
 //                         erase()                           //
@@ -800,22 +819,22 @@ TEST_F(VectorTest, assignmentOperatorNonEmptyVector)
 {
     ft::vector<int> vec;
 
-    ftVec = vec;
+    vec = ftVec;
     EXPECT_TRUE(vec == ftVec);
     EXPECT_EQ(ftVec.size(), vec.size());
     EXPECT_EQ(ftVec.capacity(), vec.capacity());
     EXPECT_EQ(ftVec.get_allocator(), vec.get_allocator());
 }
 
-TEST_F(VectorTest, assignmentOperatorOverwritingNonEmptyVector)
+TEST_F(VectorTest, assignmentOperatorTwoNonEmptyVectors)
 {
     ft::vector<int> vec;
-
-    ftVec = vec;
-    EXPECT_TRUE(vec == ftVec);
-    EXPECT_EQ(ftVec.size(), vec.size());
-    EXPECT_EQ(ftVec.capacity(), vec.capacity());
-    EXPECT_EQ(ftVec.get_allocator(), vec.get_allocator());
+    vec.push_back(100);
+    vec.push_back(100);
+    vec = ftVec;
+    EXPECT_EQ(vec.get_allocator(), ftVec.get_allocator());
+    EXPECT_EQ(vec.capacity(), ftVec.capacity());
+    EXPECT_EQ(vec.size(), ftVec.size());
 }
 
 ///////////////////////////////////////////////////////////////

@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 #include "VectorIterator.hpp"
+#include "utils/type_traits.hpp"
 #include <utils/utility.hpp>
 
 namespace ft
@@ -69,18 +70,18 @@ public:
     vector(const vector& other)
         : _allocator(other._allocator)
         , _capacity(other._capacity)
+        , _elements(NULL)
+        , _begin(NULL)
+        , _end(NULL)
     {
-        _begin = NULL;
-        _end = NULL;
-        _elements = NULL;
         if(!other.empty())
         {
             _elements = _allocator.allocate(other._capacity);
-            _begin = &_elements[0];
-            for(size_type i = 0; i < other.size(); ++i)
+            for(size_t i = 0; i < other.size(); ++i)
             {
-                _elements[i] = other._elements[i];
+                this->_allocator.construct(&this->_elements[i], other._elements[i]);
             }
+            _begin = &_elements[0];
             _end = &_elements[other.size()];
         }
     }
@@ -97,25 +98,9 @@ public:
     // OPERATORS OVERLOAD
     vector& operator=(const vector& other)
     {
-        if(this->capacity() || other.empty())
-        {
-            this->clear();
-            this->_allocator.deallocate(this->_elements, capacity());
-            this->_capacity = other.capacity();
-            if(other.empty())
-            {
-                return *this;
-            }
-        }
-        this->_allocator = other._allocator;
-        this->_capacity = other.capacity();
-        this->_elements = _allocator.allocate(this->capacity());
-        this->_begin = this->_elements;
-        this->_end = &this->_elements[other.size()];
-        for(size_t i = 0; i < size(); ++i)
-        {
-            this->_allocator.construct(&this->_elements[i], other._elements[i]);
-        }
+        vector tmp(other);
+        swap(tmp);
+
         return *this;
     }
 
@@ -244,7 +229,7 @@ public:
 
     size_type size() const
     {
-        return distance(begin(), end()); // std::distance(begin(), end())
+        return ft::distance(begin(), end());
     };
 
     size_type max_size() const
@@ -258,6 +243,8 @@ public:
         {
             throw std::length_error("Invalid reserve new_cap");
         }
+
+        // n = ft::max(n, this->_capacity * 2); TODO
         reallocate(new_cap);
     }
 
@@ -305,23 +292,24 @@ public:
         }
     }
 
-    // template <class InputIt>
-    // void insert(iterator pos, InputIt first, InputIt last)
-    // {
-    //     const size_type count = last - first; // TODO replace std::distance with ft::distance
+    template <class InputIt>
+    typename ft::enable_if<ft::is_iterator<typename InputIt::iterator_category>::value>::type
+    insert(iterator pos, InputIt first, InputIt last)
+    {
+        const size_type count = ft::distance(first, last);
 
-    //     if(size() + count > capacity())
-    //     {
-    //         difference_type offset = pos - begin();
-    //         reallocate(size() + count);
-    //         pos = begin() + offset;
-    //     }
-    //     _end += count;
-    //     for(; first != last; ++first, ++pos)
-    //     {
-    //         _allocator.construct(&(*pos), *first);
-    //     }
-    // }
+        if(size() + count > capacity())
+        {
+            difference_type offset = pos - begin();
+            reallocate(size() + count);
+            pos = begin() + offset;
+        }
+        _end += count;
+        for(; first != last; ++first, ++pos)
+        {
+            _allocator.construct(&(*pos), *first);
+        }
+    }
 
     iterator erase(iterator pos)
     {
@@ -335,7 +323,7 @@ public:
 
     iterator erase(iterator first, iterator last)
     {
-        difference_type diff = distance(first, last);
+        difference_type diff = ft::distance(first, last);
         if(diff > 0)
         {
             for(iterator it = last; it != end(); ++it)
@@ -355,7 +343,6 @@ public:
 
     void push_back(const T& value)
     {
-        // TODO with iterators
         if(size() >= capacity())
         {
             reallocate(getNewCapacity());
@@ -404,11 +391,6 @@ public:
     }
 
 private:
-    difference_type distance(iterator first, iterator last) const
-    {
-        return last - first;
-    }
-
     size_type getNewCapacity() const
     {
         if(capacity() == 0)
