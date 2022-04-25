@@ -29,5 +29,3 @@ jobs:
       run: cd vector && make test -n
     - name: Make Vector
       run: cd vector && make test
-    - name: Run
-      run: ./vectorTest
