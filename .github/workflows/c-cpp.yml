@@ -17,7 +17,7 @@ jobs:
     - name: compile gtest
       run: ls && cd googletest-release-1.8.0 && cd googletest && cmake . && make && ls
     - name: link lib gtest
-      run: cp *.a /usr/local/lib/
+      run: echo "----------" && ls && ln -s *.a /usr/local/lib/
     - name: link include gtest
       run: cp include/* /usr/local/include/
     
