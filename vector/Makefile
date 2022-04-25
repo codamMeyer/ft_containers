@@ -26,7 +26,7 @@ TEST_FILES= 							\
 all: test
 
 test: $(HEADER_FILES) $(TEST_FILES)
-	@g++ $(TEST_FLAGS) $(SRC_FILES) $(TEST_FILES) -o $(TEST) && ./$(TEST)
+	@g++ $(SRC_FILES) $(TEST_FILES) -o $(TEST) $(TEST_FLAGS) && ./$(TEST) 
 
 testMac: $(HEADER_FILES) $(TEST_FILES)
 	@g++ $(TEST_MAC) $(SRC_FILES) $(TEST_FILES) -o $(TEST)
