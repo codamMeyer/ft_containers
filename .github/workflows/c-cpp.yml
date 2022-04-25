@@ -15,7 +15,7 @@ jobs:
     - name: Install gtest
       run: wget https://github.com/google/googletest/archive/release-1.8.0.zip && unzip release-1.8.0.zip
     - name: compile gtest
-      run: cd release-1.8.0 cd googletest && cmake . && make && ls
+      run: cd release-1.8.0 && cd googletest && cmake . && make && ls
     # - name: Compile gtest
     #   run: cd /usr/src/googletest/googletest && sudo cmake . && sudo make
     # - name: Install gtest
