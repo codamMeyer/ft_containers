@@ -19,7 +19,7 @@ jobs:
     - name: link lib gtest
       run: cd googletest-release-1.8.0  && sudo ln -s *.a /usr/local/lib/
     - name: link include gtest
-      run: cd googletest-release-1.8.0 && sudo cp -r include/* /usr/local/include/
+      run: cd googletest-release-1.8.0 && sudo ln -s include/gtest /usr/local/include/
     
     #   run: cd /usr/src/googletest/googletest && sudo cp lib/libgtest* /usr/local/lib/ && sudo cp -r include/gtest /usr/local/include/
     - name: Check gtest
