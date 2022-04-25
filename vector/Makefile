@@ -3,10 +3,13 @@ FLAGS=-Wall -Werror -Wextra -I../
 
 CFLAGS= $(FLAGS) -std=c++98
 GTEST_INCLUDE=-I/Users/mmeyer/Desktop/googletest-release-1.8.0/googletest/include
+
 TEST_MAC= -Wall -Werror -Wextra $(GTEST_INCLUDE) -L/Users/mmeyer/Desktop/googletest-release-1.8.0/googletest -lgtest -lgtest_main
 
-TEST_FLAGS= $(FLAGS) -fsanitize=address -fsanitize=leak -Wl,-rpath=/usr/local/lib -L/home/mmeyer -lgtest -lgtest_main -lpthread -ggdb
+TEST_FLAGS= $(FLAGS) -fsanitize=address -fsanitize=leak -Wl,-rpath=/usr/local/lib  -L/usr/local/lib -lgtest -lgtest_main -lpthread -ggdb
 GDB_TEST_FLAGS= $(FLAGS) -Wl,-rpath=/usr/local/lib -lgtest -lgtest_main -lpthread -ggdb3 -O0
+
+TEST_CI= -Wall -Werror -Wextra $(GTEST_INCLUDE) -L/googletest-release-1.8.0/googletest -lgtest -lgtest_main
 
 NAME=vector
 
