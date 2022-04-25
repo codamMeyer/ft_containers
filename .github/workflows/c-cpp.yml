@@ -1,28 +1,28 @@
-# name: CMake
+name: CMake
 
-# on:
-#   push:
-#     branches: [ main ]
-#   pull_request:
-#     branches: [ main ]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-# jobs:
-#   build:
+jobs:
+  build:
 
-#     runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-#     steps:
-#     - name: Install gtest
-#       run: sudo apt -y install googletest && dpkg -L googletest
-#     - name: Compile gtest
-#       run: cd /usr/src/googletest/googletest && sudo cmake . && sudo make
-#     - name: Install gtest
-#       run: cd /usr/src/googletest/googletest && sudo cp lib/libgtest* /usr/local/lib/ && sudo cp -r include/gtest /usr/local/include/
-#     - name: Check gtest
-#       run: ls /usr/local/lib/ && ls /usr/local/include/
+    steps:
+    - name: Install gtest
+      run: wget https://github.com/google/googletest/archive/release-1.8.0.zip && ls
+    # - name: Compile gtest
+    #   run: cd /usr/src/googletest/googletest && sudo cmake . && sudo make
+    # - name: Install gtest
+    #   run: cd /usr/src/googletest/googletest && sudo cp lib/libgtest* /usr/local/lib/ && sudo cp -r include/gtest /usr/local/include/
+    # - name: Check gtest
+    #   run: ls /usr/local/lib/ && ls /usr/local/include/
     
-#     - uses: actions/checkout@v2
-#     - name: Make Vector
-#       run: cd vector && make test
-#     - name: Run
-#       run: ./vectorTest
+    # - uses: actions/checkout@v2
+    # - name: Make Vector
+    #   run: cd vector && make test
+    # - name: Run
+    #   run: ./vectorTest
