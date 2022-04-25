@@ -269,8 +269,8 @@ TEST_F(VectorTest, pushBackWithCapacity)
 TEST_F(EmptyVectorTest, popBackEmptyVector)
 {
     ftVec.pop_back();
-    EXPECT_EQ(ftVec.size(), 0);
-    EXPECT_EQ(ftVec.capacity(), 0);
+    EXPECT_EQ(ftVec.size(), 0u);
+    EXPECT_EQ(ftVec.capacity(), 0u);
 }
 
 TEST_F(VectorTest, popBackLastOneElementContainer)
@@ -415,10 +415,10 @@ TEST_F(VectorTest, swapFunction)
 
     secondVector.swap(ftVec);
 
-    EXPECT_EQ(ftVec.size(), 3);
-    EXPECT_EQ(secondVector.size(), 1);
-    EXPECT_EQ(ftVec.capacity(), 3);
-    EXPECT_EQ(secondVector.capacity(), 1);
+    EXPECT_EQ(ftVec.size(), 3u);
+    EXPECT_EQ(secondVector.size(), 1u);
+    EXPECT_EQ(ftVec.capacity(), 3u);
+    EXPECT_EQ(secondVector.capacity(), 1u);
     EXPECT_EQ(&(*secondVector_beg), &(*ftVec.begin()));
     EXPECT_EQ(&(*ftVec_beg), &(*secondVector.begin()));
     EXPECT_EQ(&(*secondVector_end), &(*(ftVec.end() - 1)));
@@ -438,10 +438,10 @@ TEST_F(VectorTest, swapTwoEmptyVectors)
 
     second.swap(first);
 
-    EXPECT_EQ(first.size(), 0);
-    EXPECT_EQ(second.size(), 0);
-    EXPECT_EQ(first.capacity(), 0);
-    EXPECT_EQ(second.capacity(), 0);
+    EXPECT_EQ(first.size(), 0u);
+    EXPECT_EQ(second.size(), 0u);
+    EXPECT_EQ(first.capacity(), 0u);
+    EXPECT_EQ(second.capacity(), 0u);
     EXPECT_EQ(&(*second_beg), &(*first.begin()));
     EXPECT_EQ(&(*first_beg), &(*second.begin()));
     EXPECT_EQ(&(*second_end), &(*(first.end() - 1)));
@@ -493,8 +493,8 @@ TEST_F(EmptyVectorTest, insertInBeginEmptyVector)
     ftVec.insert(ftVec.begin(), 300);
 
     EXPECT_EQ(ftVec.at(0), 300);
-    EXPECT_EQ(ftVec.size(), 1);
-    EXPECT_EQ(ftVec.capacity(), 1);
+    EXPECT_EQ(ftVec.size(), 1u);
+    EXPECT_EQ(ftVec.capacity(), 1u);
     EXPECT_EQ(*ftVec.begin(), 300);
     EXPECT_EQ(*(ftVec.end() - 1), 300);
 }
@@ -505,8 +505,8 @@ TEST_F(VectorTest, insertInEndEmptyVector)
     myVec.insert(myVec.end(), 300);
 
     EXPECT_EQ(myVec.at(0), 300);
-    EXPECT_EQ(myVec.size(), 1);
-    EXPECT_EQ(myVec.capacity(), 1);
+    EXPECT_EQ(myVec.size(), 1u);
+    EXPECT_EQ(myVec.capacity(), 1u);
     EXPECT_EQ(*myVec.begin(), 300);
     EXPECT_EQ(*(myVec.end() - 1), 300);
 }
@@ -522,8 +522,8 @@ TEST_F(EmptyVectorTest, insertBeginWithEnoughCapacity)
     EXPECT_EQ(ftVec.at(0), 300);
     EXPECT_EQ(ftVec.at(1), 400);
     EXPECT_EQ(ftVec.at(2), 500);
-    EXPECT_EQ(ftVec.size(), 3);
-    EXPECT_EQ(ftVec.capacity(), 5);
+    EXPECT_EQ(ftVec.size(), 3u);
+    EXPECT_EQ(ftVec.capacity(), 5u);
     EXPECT_EQ(*ftVec.begin(), 300);
     EXPECT_EQ(*(ftVec.end() - 1), 500);
 }
@@ -539,8 +539,8 @@ TEST_F(EmptyVectorTest, insertEndWithEnoughCapacity)
     EXPECT_EQ(ftVec.at(0), 400);
     EXPECT_EQ(ftVec.at(1), 500);
     EXPECT_EQ(ftVec.at(2), 300);
-    EXPECT_EQ(ftVec.size(), 3);
-    EXPECT_EQ(ftVec.capacity(), 5);
+    EXPECT_EQ(ftVec.size(), 3u);
+    EXPECT_EQ(ftVec.capacity(), 5u);
     EXPECT_EQ(*ftVec.begin(), 400);
     EXPECT_EQ(*(ftVec.end() - 1), 300);
 }
@@ -1151,7 +1151,7 @@ TEST_F(ObjectDestructionTest, resizeCheckObjectDestruction)
     {
         ft::vector<MyObject> objs(2, a);
 
-        EXPECT_EQ(objs.size(), 2);
+        EXPECT_EQ(objs.size(), 2u);
         objs.resize(4, a);
     }
     EXPECT_EQ(counter, 7); // +1 because of param
@@ -1163,7 +1163,7 @@ TEST_F(ObjectDestructionTest, reserveCheckObjectDestruction)
     {
         ft::vector<MyObject> objs(2, a);
 
-        EXPECT_EQ(objs.size(), 2);
+        EXPECT_EQ(objs.size(), 2u);
         objs.reserve(10);
     }
     EXPECT_EQ(counter, 4);
