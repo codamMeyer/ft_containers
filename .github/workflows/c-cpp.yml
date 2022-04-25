@@ -23,7 +23,7 @@ jobs:
     - name: link include gtest
       run: cd googletest-release-1.8.0 && sudo ln -s include/gtest /usr/local/include/
     - name: Check gtest
-      run: ls /usr/local/lib/ && ls /usr/local/include/    
+      run: ls /usr/local/lib/ && ls /usr/local/include/gtest/
     - uses: actions/checkout@v2
     - name: Make Vector
       run: cd vector && make test
